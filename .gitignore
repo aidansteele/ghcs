@@ -1,0 +1,6 @@
+*.a
+*.o
+.idea
+*.DS_Store
+src/nimcache
+
