@@ -10,7 +10,7 @@ install:
       sh bootstrap.sh
       cd ..
       git clone https://github.com/nim-lang/nimble.git
-      
+
       cd nimble
       git clone -b v0.13.0 --depth 1 https://github.com/nim-lang/nim vendor/nim
       nim c -r src/nimble install
@@ -23,4 +23,4 @@ before_script:
   - export PATH=`pwd`/Nim/bin:`pwd`/nimble/bin:$PATH
 
 script:
-  - make ghcs
+  - cd src && make ghcs
