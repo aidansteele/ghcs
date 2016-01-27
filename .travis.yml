@@ -11,6 +11,8 @@ install:
       cd ..
       git clone https://github.com/nim-lang/nimble.git
 
+      export PATH=`pwd`/Nim/bin:$PATH
+
       cd nimble
       git clone -b v0.13.0 --depth 1 https://github.com/nim-lang/nim vendor/nim
       nim c -r src/nimble install
