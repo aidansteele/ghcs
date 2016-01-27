@@ -22,7 +22,7 @@ install:
 before_script:
   - set -e
   - set -x
-  - export PATH=`pwd`/Nim/bin:`pwd`/nimble/bin:$PATH
+  - export PATH=`pwd`/Nim/bin:$HOME/.nimble/bin:$PATH
 
 script:
   - echo $PATH
