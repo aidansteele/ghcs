@@ -25,4 +25,5 @@ before_script:
   - export PATH=`pwd`/Nim/bin:`pwd`/nimble/bin:$PATH
 
 script:
+  - echo $PATH
   - cd src && make ghcs
