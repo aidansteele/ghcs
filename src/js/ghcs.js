@@ -1,7 +1,21 @@
-Ghcs = {
-    meth: function() {
-        var str = "hello from method";
-        print(str);
-        return str;
+class Ghcs {
+    static http(opts) {
+
     }
-};
+
+    static readFile(opts) {
+
+    }
+
+    static shell(opts) {
+
+    }
+
+    static stdin() {
+
+    }
+
+    static stdout(output) {
+
+    }
+}
