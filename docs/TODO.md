@@ -2,6 +2,8 @@
 TO DO before 1.0 in no particular order:
 
 - [ ] Run ES6 scripts using Babel
+- [ ] Bundle underscore.js
+- [ ] Some kind of AWS helpers in JS?
 - [ ] Investigate unit testing frameworks for nim
 - [ ] Bundle helpful standard checks (see below)
 - [ ] Validate works correctly where parent or master is a merge commit
