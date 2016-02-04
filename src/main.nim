@@ -79,9 +79,40 @@ type
   JsExecutor = ref object of RootObj
     context: DuktapeContext
 
+proc babelifyString*(src: string): string =
+  let ctx = createNewContext()
+
+  let babel = sourceForBundledFilename("js/babel.js")
+  discard execJavascript(ctx, babel)
+
+  discard execJavascript(ctx, """
+    function transform(input) {
+      var options = { presets: ['es2015'] };
+      var babelified = Babel.transform(input, options);
+      return babelified.code;
+    }
+  """)
+
+  let cstr: cstring = src
+  result = $execJavascriptWithArgs(ctx, "transform", [cstr], 1)
+
+proc execSourceFile(jsExe: JSExecutor, name: string, babelify = false) =
+  let bundledName = "js/" & name & ".js"
+  var src = ""
+
+  if bundledName in getBundledFilenames():
+    src = sourceForBundledFilename(bundledName)
+  else:
+    src = readFile(name)
+
+  if babelify:
+    src = babelifyString(src)
+
+  echo(src)
+  discard execJavascript(jsExe.context, src)
+
 proc injectHelperFuncs(jsExe: JSExecutor) =
-  let src = sourceForBundledFilename("js/ghcs.js")
-  execJavascript(jsExe.context, src)
+  execSourceFile(jsExe, "ghcs", true)
 
 proc newJsExecutor(): JsExecutor =
   let ctx = createNewContext()
@@ -94,19 +125,10 @@ proc newJsExecutor(): JsExecutor =
 proc destroyJsExecutor(jsExe: JSExecutor) =
   destroyContext(jsExe.context)
 
-proc execSourceFile(jsExe: JSExecutor, name: string) =
-  let bundledName = "js/" & name & ".js"
-  if bundledName in getBundledFilenames():
-    let src = sourceForBundledFilename(bundledName)
-  else:
-    let src = readFile(name)
-  #let src = readFile(name)
-  execJavascript(jsExe.context, src)
-
 import os
 
 let jsExe = newJsExecutor()
-execSourceFile(jsExe, paramStr(1))
+execSourceFile(jsExe, paramStr(1), true)
 destroyJsExecutor(jsExe)
 
 #echo(pretty(ghcsOutput(repo, config, "moomoo")))
