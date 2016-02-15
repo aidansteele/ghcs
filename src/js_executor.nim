@@ -20,9 +20,9 @@ proc readJavascriptSource*(name: cstring, babelify: cint): cstring {.exportc.} =
 
   result = src
 
-proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = true) =
+proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
   let cBabelify: cint = if babelify: 1 else: 0
-  let src = $readJavascriptSource(name, cBabelify)
+  var src = $readJavascriptSource(name, cBabelify)
   discard execJavascript(jsExe.context, src)
 
 proc injectHelperFuncs(jsExe: JSExecutor) =

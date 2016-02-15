@@ -10,7 +10,7 @@ let api = GithubApi(baseUrl: config.baseUrl, token: token)
 let repo = newGhcsRepo(api, config.repoName)
 
 let jsExe = newJsExecutor()
-execSourceFile(jsExe, paramStr(1), false)
+execSourceFile(jsExe, paramStr(1))
 destroyJsExecutor(jsExe)
 
 #echo(pretty(ghcsOutput(repo, config, "moomoo")))
