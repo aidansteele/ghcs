@@ -2,8 +2,7 @@
 *.o
 .idea
 *.DS_Store
-src/nimcache
+nimcache
 
 src/babelify
 src/main
-src/tests
