@@ -15,14 +15,14 @@ proc duk_json_encode(ctx: DuktapeContext, index: cint): cstring {.importc.}
 proc duk_json_decode(ctx: DuktapeContext, index: cint) {.importc.}
 proc duk_push_c_function*(ctx: DuktapeContext, funcPtr: pointer, nargs: cint): cint {.importc.}
 proc duk_push_current_function*(ctx: DuktapeContext) {.importc.}
-proc duk_get_string*(ctx: DuktapeContext, index: cint): cstring {.importc.}
-proc duk_push_string*(ctx: DuktapeContext, str: cstring): cstring {.importc.}
-proc duk_to_pointer*(ctx: DuktapeContext, index: cint): pointer {.importc.}
-proc duk_push_pointer*(ctx: DuktapeContext, raw: pointer) {.importc.}
-proc duk_put_global_string*(ctx: DuktapeContext, key: cstring): cint {.importc.}
-proc duk_get_prop_string*(ctx: DuktapeContext, objIndex: cint, key: cstring): cint {.importc.}
-proc duk_put_prop_string*(ctx: DuktapeContext, objIndex: cint, key: cstring): cint {.importc.}
-proc duk_pop*(ctx: DuktapeContext) {.importc.}
+proc duk_get_string(ctx: DuktapeContext, index: cint): cstring {.importc.}
+proc duk_push_string(ctx: DuktapeContext, str: cstring): cstring {.importc.}
+proc duk_to_pointer(ctx: DuktapeContext, index: cint): pointer {.importc.}
+proc duk_push_pointer(ctx: DuktapeContext, raw: pointer) {.importc.}
+proc duk_put_global_string(ctx: DuktapeContext, key: cstring): cint {.importc.}
+proc duk_get_prop_string(ctx: DuktapeContext, objIndex: cint, key: cstring): cint {.importc.}
+proc duk_put_prop_string(ctx: DuktapeContext, objIndex: cint, key: cstring): cint {.importc.}
+proc duk_pop(ctx: DuktapeContext) {.importc.}
 
 
 proc fatalHandler*(ctx: DuktapeContext, errCode: cint, message: cstring) {.exportc.} =
