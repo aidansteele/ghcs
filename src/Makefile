@@ -9,5 +9,10 @@ duktape_c.o: duktape_c.c
 duktape_c.a: duktape_c.o duktape.o
 	ar rcs $@ $^
 
-ghcs: duktape_c.a *.nim
+vendor/babel/babel.js: vendor/babel/babel.orig.js vendor/babel/babel.patch
+	patch vendor/babel/babel.orig.js -o vendor/babel/babel.js < vendor/babel/babel.patch
+
+ghcs: duktape_c.a *.nim vendor/babel/babel.js
 	nimble build
+
+default: ghcs

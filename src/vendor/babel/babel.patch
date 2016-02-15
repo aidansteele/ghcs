@@ -1,0 +1,11 @@
+--- vendor/babel/babel.orig.js	2016-02-15 15:18:17.000000000 +1100
++++ vendor/babel/babel.js	2016-02-10 23:19:15.000000000 +1100
+@@ -29040,7 +29040,7 @@
+ 	  var isOptions = /^(.*,)+(.+)?$/.test(m.body);
+ 	  if (!isSequence && !isOptions) {
+ 	    // {a},b}
+-	    if (m.post.match(/,.*}/)) {
++	    if (m.post.match(/,.*\}/)) {
+ 	      str = m.pre + '{' + m.body + escClose + m.post;
+ 	      return expand(str);
+ 	    }
