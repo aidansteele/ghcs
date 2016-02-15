@@ -4,3 +4,5 @@
 *.DS_Store
 src/nimcache
 
+src/babelify
+src/main
