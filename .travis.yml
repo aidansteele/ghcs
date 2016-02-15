@@ -17,5 +17,6 @@ before_script:
   - export PATH=$HOME/Nim/bin:$HOME/.nimble/bin:$PATH
 
 script:
-  - cd src && make ghcs
-  - cd src && make test
+  - cd src
+  - make ghcs
+  - make test
