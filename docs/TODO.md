@@ -15,6 +15,7 @@ TO DO before 1.0 in no particular order:
 - [ ] Ensure that generated binary isn't bigger than it should be (debug mode?)
 - [ ] Split out docs into `docs/` dir
 - [ ] Generate manpages for deb/rpm packages (use a markdown2man util)
+- [ ] Check out code coverage (for ghcs itself): https://github.com/yglukhov/coverage
 
 Possibly bundled checks:
 - [ ] Whatever most common checks are around workplace
