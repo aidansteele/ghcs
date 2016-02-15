@@ -15,7 +15,7 @@ vendor/babel/babel.js: vendor/babel/babel.orig.js vendor/babel/babel.patch
 ghcs: duktape_c.a *.nim vendor/babel/babel.js
 	nimble build
 
-test:
+test: ghcs
 	nim c -r tests.nim
 
 default: ghcs
