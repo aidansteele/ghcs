@@ -72,63 +72,13 @@ proc ghcsOutput(repo: GhcsRepo, config: GitConfig, context: string): JsonNode =
   result = output
 
 import bundled_js
+import js_executor
 echo($getBundledFilenames())
-let src = sourceForBundledFilename("js/test.js")
-
-type
-  JsExecutor = ref object of RootObj
-    context: DuktapeContext
-
-proc babelifyString*(src: string): string =
-  let ctx = createNewContext()
-
-  let babel = sourceForBundledFilename("js/babel.js")
-  discard execJavascript(ctx, babel)
-
-  discard execJavascript(ctx, """
-    function transform(input) {
-      var options = { presets: ['es2015'] };
-      var babelified = Babel.transform(input, options);
-      return babelified.code;
-    }
-  """)
-
-  let cstr: cstring = src
-  result = $execJavascriptWithArgs(ctx, "transform", [cstr], 1)
-
-proc execSourceFile(jsExe: JSExecutor, name: string, babelify = false) =
-  let bundledName = "js/" & name & ".js"
-  var src = ""
-
-  if bundledName in getBundledFilenames():
-    src = sourceForBundledFilename(bundledName)
-  else:
-    src = readFile(name)
-
-  if babelify:
-    src = babelifyString(src)
-
-  echo(src)
-  discard execJavascript(jsExe.context, src)
-
-proc injectHelperFuncs(jsExe: JSExecutor) =
-  execSourceFile(jsExe, "ghcs", true)
-
-proc newJsExecutor(): JsExecutor =
-  let ctx = createNewContext()
-  let jsExe = JsExecutor(context: ctx)
-  injectHelperFuncs(jsExe)
-
-  result = jsExe
-
-# TODO: where are the non-experimental destructors?
-proc destroyJsExecutor(jsExe: JSExecutor) =
-  destroyContext(jsExe.context)
 
 import os
 
 let jsExe = newJsExecutor()
-execSourceFile(jsExe, paramStr(1), true)
+execSourceFile(jsExe, paramStr(1), false)
 destroyJsExecutor(jsExe)
 
 #echo(pretty(ghcsOutput(repo, config, "moomoo")))

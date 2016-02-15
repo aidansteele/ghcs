@@ -5,5 +5,6 @@ function moo(fn) {
 }
 
 //print(Ghcs);
+var Ghcs = require('ghcs');
 print(moo(function() { return Ghcs.meth(); }));
 //print(moo(() =>  "hey"));
