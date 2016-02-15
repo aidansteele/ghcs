@@ -6,3 +6,4 @@ src/nimcache
 
 src/babelify
 src/main
+src/tests
