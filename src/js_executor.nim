@@ -1,13 +1,14 @@
 import babelify
 import duktape
 import bundled_js
+import json
 
 type
   JsExecutor* = ref object of RootObj
     context: DuktapeContext
 
-proc readJavascriptSource*(name: cstring, babelify: cint): cstring {.exportc.} =
-  let bundledName = $name & ".js"
+proc readJavascriptSource*(name: string, babelify: bool): string =
+  let bundledName = name & ".js"
   var src = ""
 
   if bundledName in getBundledFilenames():
@@ -15,17 +16,22 @@ proc readJavascriptSource*(name: cstring, babelify: cint): cstring {.exportc.} =
   else:
     src = readFile($name)
 
-  if babelify > 0:
+  if babelify:
     src = babelifyString(src)
 
   result = src
 
+proc readThunkJson(json: JsonNode): JsonNode =
+  let name = json["name"].str
+  let src = readJavascriptSource(name, false)
+  result = %*{ "src": src }
+
 proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
-  let cBabelify: cint = if babelify: 1 else: 0
-  var src = $readJavascriptSource(name, cBabelify)
+  let src = readJavascriptSource(name, babelify)
   discard execJavascript(jsExe.context, src)
 
 proc injectHelperFuncs(jsExe: JSExecutor) =
+  registerProc(jsExe.context, "_readJavascriptSourceJson", readThunkJson)
   execSourceFile(jsExe, "moduleLoader")
 
 proc newJsExecutor*(): JsExecutor =
