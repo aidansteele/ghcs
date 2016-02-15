@@ -16,6 +16,6 @@ ghcs: duktape_c.a *.nim vendor/babel/babel.js
 	nimble build
 
 test:
-	./tests.nim
+	nim c -r tests.nim
 
 default: ghcs

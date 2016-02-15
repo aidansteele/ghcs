@@ -1,5 +1,3 @@
-#!/usr/bin/env nim c -r
-
 import unittest
 import duktape
 
