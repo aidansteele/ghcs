@@ -3,8 +3,8 @@ import osproc
 import json
 
 suite "rubocop tests":
-  test "end-to-end integration test":
-    let (outp, exitCode) = execCmdEx("./main js rubocop --path tests/rubocop.json")
+  test "rubocop integration test":
+    let (outp, exitCode) = execCmdEx("./main js rubocop --path tests/fixtures/rubocop.json")
     let actual = parseJSON(outp)
     let expected = parseJSON("""
       {
