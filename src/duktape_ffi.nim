@@ -1,4 +1,4 @@
-{.link: "duktape.o", passL: "-lm".}
+{.compile: "vendor/duktape/duktape.c", passL: "-lm".}
 
 type DuktapeContextObj {.final.} = object
 type DuktapeContext* = ptr DuktapeContextObj
