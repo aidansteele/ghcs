@@ -45,6 +45,7 @@ proc injectHelperFuncs(jsExe: JSExecutor) =
   registerProc(jsExe.context, "_ghcsStdout", ghcsStdout)
   registerProc(jsExe.context, "_ghcsShell", ghcsShell)
   registerProc(jsExe.context, "_ghcsHttp", ghcsHttp)
+  registerProc(jsExe.context, "_ghcsArgv", ghcsArgv)
 
   let loader = readJavascriptSource("moduleLoader", false)
   discard evalJavascript(jsExe.context, loader)

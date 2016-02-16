@@ -3,6 +3,8 @@ import osproc
 import httpclient
 import strutils
 import strtabs
+import sequtils
+import os
 
 proc ghcsReadFile*(json: JsonNode): JsonNode {.procvar.} =
   let path = json["path"].str
@@ -22,6 +24,10 @@ proc ghcsShell*(json: JsonNode): JsonNode {.procvar.} =
   let cmd = json["command"].str
   let (outp, exitCode) = execCmdEx(cmd)
   result = %*{ "output": outp, "exitCode": exitCode }
+
+proc ghcsArgv*(json: JsonNode): JsonNode {.procvar.} =
+  let argv = map(commandLineParams(), proc(x: TaintedString): JsonNode = newJString($x))
+  result = %*{ "argv": argv }
 
 proc ghcsHttp*(json: JsonNode): JsonNode {.procvar.} =
   let url = json["url"].str

@@ -33,6 +33,10 @@ export default class Ghcs {
     static stdout(output) {
         _ghcsStdout({ stdout: output })
     }
+
+    static argv() {
+        return _ghcsArgv({}).argv;
+    }
 }
 
 // TODO work out why transform-es2015-modules-commonjs isn't working
