@@ -11,12 +11,14 @@ language: c
 
 install:
   - ci/setup_nim.sh
+  - ci/setup_ruby.sh
 
 before_script:
   - set -e
-  - export PATH=$HOME/Nim/bin:$HOME/.nimble/bin:$PATH
+  - export PATH=$HOME/Nim/bin:$HOME/.nimble/bin:~/.rubies/ruby-2.3.0:$PATH
 
 script:
   - cd src
   - make ghcs
+  - (cd tests/ruby_fixture && bundle)
   - make test
