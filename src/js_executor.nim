@@ -31,6 +31,7 @@ proc readThunkJson(json: JsonNode): JsonNode =
 proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
   discard evalJavascript(jsExe.context, """
     function runIt(opts) {
+      print(JSON.stringify(opts));
       require(opts.name);
       return {};
      }
