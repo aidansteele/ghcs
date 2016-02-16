@@ -4,7 +4,7 @@ import json
 
 suite "rubocop tests":
   test "end-to-end integration test":
-    let (outp, exitCode) = execCmdEx("./main js rubocop --directory tests/ruby_fixture")
+    let (outp, exitCode) = execCmdEx("./main js rubocop --path tests/rubocop.json")
     let actual = parseJSON(outp)
     let expected = parseJSON("""
       {

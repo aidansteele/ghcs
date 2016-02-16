@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "rubocop_version": "0.37.2",
+    "ruby_engine": "ruby",
+    "ruby_version": "2.2.3",
+    "ruby_patchlevel": "173",
+    "ruby_platform": "x86_64-darwin15"
+  },
+  "files": [
+    {
+      "path": "example_file.rb",
+      "offenses": [
+        {
+          "severity": "convention",
+          "message": "Missing top-level class documentation comment.",
+          "cop_name": "Style/Documentation",
+          "corrected": null,
+          "location": {
+            "line": 2,
+            "column": 3,
+            "length": 5
+          }
+        },
+        {
+          "severity": "convention",
+          "message": "Prefer single-quoted strings when you don't need string interpolation or special symbols.",
+          "cop_name": "Style/StringLiterals",
+          "corrected": false,
+          "location": {
+            "line": 4,
+            "column": 12,
+            "length": 13
+          }
+        }
+      ]
+    },
+    {
+      "path": "Gemfile",
+      "offenses": []
+    }
+  ],
+  "summary": {
+    "offense_count": 2,
+    "target_file_count": 2,
+    "inspected_file_count": 2
+  }
+}

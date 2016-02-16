@@ -1,10 +1,11 @@
 let Ghcs = require('ghcs');
 
 export default class Rubocop {
-    constructor({context = 'rubocop', directory = '.', bundler = true}) {
+    constructor({context = 'rubocop', directory = '.', bundler = true, path}) {
         this.context = context;
         this.directory = directory;
         this.bundler = bundler;
+        this.path = path;
     }
 
     run(opts) {
@@ -13,10 +14,15 @@ export default class Rubocop {
 
     rubocopOutput() {
         if (!this.rubocopOutputJson) {
-            let bundlerPrefix = this.bundler ? 'bundle exec' : '';
-            let cmd = `(cd ${this.directory} && ${bundlerPrefix} rubocop --format json)`;
-            let raw = Ghcs.shell({ command: cmd }).output;
-            this.rubocopOutputJson = JSON.parse(raw);
+            if (this.path) {
+                let raw = Ghcs.readFile({ path: this.path });
+                this.rubocopOutputJson = JSON.parse(raw);
+            } else {
+                let bundlerPrefix = this.bundler ? 'bundle exec ' : '';
+                let cmd = `(cd ${this.directory} && ${bundlerPrefix}rubocop --format json)`;
+                let raw = Ghcs.shell({ command: cmd }).output;
+                this.rubocopOutputJson = JSON.parse(raw);
+            }
         }
         return this.rubocopOutputJson;
     }
