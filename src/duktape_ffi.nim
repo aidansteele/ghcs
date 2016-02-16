@@ -1,4 +1,4 @@
-{.link: "duktape.o".}
+{.link: "duktape.o", passL: "-lm".}
 
 type DuktapeContextObj {.final.} = object
 type DuktapeContext* = ptr DuktapeContextObj
