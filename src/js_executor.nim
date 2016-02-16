@@ -24,14 +24,12 @@ proc readJavascriptSource*(name: string, babelify: bool): string =
 
 proc readThunkJson(json: JsonNode): JsonNode =
   let name = json["name"].str
-  echo("trying to read " & name)
   let src = readJavascriptSource(name, false)
   result = %*{ "src": src }
 
 proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
   discard evalJavascript(jsExe.context, """
     function runIt(opts) {
-      print(JSON.stringify(opts));
       require(opts.name);
       return {};
      }
