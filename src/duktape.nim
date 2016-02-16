@@ -1,29 +1,68 @@
 import json
 import strutils
 
-{.link: "duktape_c.a".}
+{.link: "duktape.o".}
 
 type DuktapeContextObj {.final.} = object
 type DuktapeContext* = ptr DuktapeContextObj
-
-proc execJavascript*(ctx: DuktapeContext, src: cstring): cstring {.importc.}
-proc execJavascriptWithArgs*(ctx: DuktapeContext, funcx: cstring, args: openArray[cstring], argc: cint): cstring {.importc.}
 
 proc duk_create_heap(allocFunc: pointer, reallocFunc: pointer, freeFunc: pointer, userData: pointer, fatalHandlerFunc: pointer): DuktapeContext {.importc.}
 proc duk_destroy_heap(ctx: DuktapeContext) {.importc.}
 proc duk_json_encode(ctx: DuktapeContext, index: cint): cstring {.importc.}
 proc duk_json_decode(ctx: DuktapeContext, index: cint) {.importc.}
-proc duk_push_c_function*(ctx: DuktapeContext, funcPtr: pointer, nargs: cint): cint {.importc.}
+proc duk_push_c_function(ctx: DuktapeContext, funcPtr: pointer, nargs: cint): cint {.importc.}
 proc duk_push_current_function*(ctx: DuktapeContext) {.importc.}
+proc duk_push_global_object*(ctx: DuktapeContext) {.importc.}
 proc duk_get_string(ctx: DuktapeContext, index: cint): cstring {.importc.}
 proc duk_push_string(ctx: DuktapeContext, str: cstring): cstring {.importc.}
 proc duk_to_pointer(ctx: DuktapeContext, index: cint): pointer {.importc.}
+proc duk_safe_to_lstring(ctx: DuktapeContext, index: cint, outLen: clong): cstring {.importc.}
 proc duk_push_pointer(ctx: DuktapeContext, raw: pointer) {.importc.}
 proc duk_put_global_string(ctx: DuktapeContext, key: cstring): cint {.importc.}
 proc duk_get_prop_string(ctx: DuktapeContext, objIndex: cint, key: cstring): cint {.importc.}
 proc duk_put_prop_string(ctx: DuktapeContext, objIndex: cint, key: cstring): cint {.importc.}
 proc duk_pop(ctx: DuktapeContext) {.importc.}
+proc duk_pcall(ctx: DuktapeContext, nargs: cint): cint {.importc.}
+proc duk_eval_raw(ctx: DuktapeContext, src: cstring, srcLength: clong, flags: cuint): cint {.importc.}
 
+const
+  DUK_COMPILE_EVAL = (1 shl 0)
+  DUK_COMPILE_FUNCTION = (1 shl 1)
+  DUK_COMPILE_STRICT = (1 shl 2)
+  DUK_COMPILE_SAFE = (1 shl 3)
+  DUK_COMPILE_NORESULT = (1 shl 4)
+  DUK_COMPILE_NOSOURCE = (1 shl 5)
+  DUK_COMPILE_STRLEN = (1 shl 6)
+
+proc evalJavascript*(ctx: DuktapeContext, src: string): string =
+  duk_push_global_object(ctx)
+
+  discard duk_push_string(ctx, "filename")
+  let flags: cuint = DUK_COMPILE_EVAL or DUK_COMPILE_SAFE or DUK_COMPILE_NOSOURCE or DUK_COMPILE_STRLEN
+
+  let res = duk_eval_raw(ctx, src, 0, flags)
+  result = $duk_safe_to_lstring(ctx, -1, 0)
+
+  if res != 0:
+    echo("an error!")
+
+  duk_pop(ctx)
+  duk_pop(ctx)
+
+proc execJavascriptFunc*(ctx: DuktapeContext, funcName: string, args: JsonNode): JsonNode =
+  duk_push_global_object(ctx)
+  discard duk_get_prop_string(ctx, -1, funcName)
+
+  discard duk_push_string(ctx, $args)
+  duk_json_decode(ctx, -1)
+
+  if duk_pcall(ctx, 1) != 0:
+    echo("an error!")
+
+  let jsonStr = $duk_json_encode(ctx, -1)
+  result = parseJson(jsonStr)
+
+  duk_pop(ctx)
 
 proc fatalHandler*(ctx: DuktapeContext, errCode: cint, message: cstring) {.exportc.} =
   let debugMsg = "error code: $1, message: $2" % [$errCode, $message]

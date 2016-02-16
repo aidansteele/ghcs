@@ -1,10 +1,11 @@
 import unittest
 import duktape
+import json
 
 suite "js executor tests":
   test "simple string literal hello world js execution":
     let ctx = createNewContext()
-    let response = $execJavascript(ctx, """
+    let response = evalJavascript(ctx, """
       function hw() {
         return "hello, world!"
       }
@@ -16,13 +17,14 @@ suite "js executor tests":
 
   test "exec func with args":
     let ctx = createNewContext()
-    discard execJavascript(ctx, """
+    discard evalJavascript(ctx, """
       function hw(args) {
-        return "hello, world of " + args
+        return {resp: "hello, world of " + args.name}
       }
     """)
 
     let cstr: cstring = "arg0"
-    let response = $execJavascriptWithArgs(ctx, "hw", [cstr], 1)
-    check(response == "hello, world of arg0")
+    let args = %*{ "name": "duktape" }
+    let response = execJavascriptFunc(ctx, "hw", args)
+    check(response["resp"].str == "hello, world of duktape")
     destroyContext(ctx)

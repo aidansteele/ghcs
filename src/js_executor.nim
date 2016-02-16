@@ -28,7 +28,7 @@ proc readThunkJson(json: JsonNode): JsonNode =
 
 proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
   let src = readJavascriptSource(name, babelify)
-  discard execJavascript(jsExe.context, src)
+  discard evalJavascript(jsExe.context, src)
 
 proc injectHelperFuncs(jsExe: JSExecutor) =
   registerProc(jsExe.context, "_readJavascriptSourceJson", readThunkJson)
