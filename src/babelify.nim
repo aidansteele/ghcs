@@ -7,7 +7,7 @@ proc babelifyString*(src: string): string =
   const babel = staticRead("vendor/babel/babel.js")
   discard evalJavascript(ctx, babel)
 
-  let r = evalJavascript(ctx, """
+  discard evalJavascript(ctx, """
     function transform(input) {
       var options = { presets: ['es2015'] };
       var babelified = Babel.transform(input.src, options);
