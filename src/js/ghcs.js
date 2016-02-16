@@ -1,28 +1,18 @@
 export default class Ghcs {
-    static http(opts) {
-        var nativeOpts = {
-            url: opts.url,
-            method: opts.method,
-            body: opts.body,
-            headers: opts.headers
-        };
+    static http({ url, method, body, headers }) {
+        var nativeOpts = { url, method, body, headers };
         return _ghcsHttp(nativeOpts);
     }
 
-    static readFile(opts) {
-        var nativeOpts = { path: opts.path };
+    static readFile({ path }) {
+        var nativeOpts = { path };
         var ret = _ghcsReadFile(nativeOpts);
         return ret.contents;
     }
 
-    static shell(opts) {
-        var nativeOpts = { command: opts.command };
+    static shell({ command }) {
+        var nativeOpts = { command };
         return _ghcsShell(nativeOpts);
-    }
-
-    static meth() {
-        print("sup");
-        return "jhiyy";
     }
 
     static stdin() {
