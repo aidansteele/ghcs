@@ -24,6 +24,7 @@ proc readJavascriptSource*(name: string, babelify: bool): string =
 
 proc readThunkJson(json: JsonNode): JsonNode =
   let name = json["name"].str
+  echo("trying to read " & name)
   let src = readJavascriptSource(name, false)
   result = %*{ "src": src }
 
