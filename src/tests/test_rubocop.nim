@@ -5,7 +5,6 @@ import json
 suite "rubocop tests":
   test "end-to-end integration test":
     let (outp, exitCode) = execCmdEx("./main js rubocop --path tests/rubocop.json")
-    echo("OUTPUT: " & outp) # for travis ci's benefit
     let actual = parseJSON(outp)
     let expected = parseJSON("""
       {
