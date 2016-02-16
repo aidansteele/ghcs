@@ -13,11 +13,13 @@ proc evalJavascript*(ctx: DuktapeContext, src: string): string =
   let flags: cuint = DUK_COMPILE_EVAL or DUK_COMPILE_SAFE or DUK_COMPILE_NOSOURCE or DUK_COMPILE_STRLEN
 
   let res = duk_eval_raw(ctx, src, 0, flags)
-  result = $duk_safe_to_lstring(ctx, -1, 0)
 
   if res != 0:
-    echo("an error!")
+    discard duk_get_prop_string(ctx, -1, "stack")
+    let stack = $duk_safe_to_lstring(ctx, -1, 0)
+    echo("Duktape error: $1 from src: $2" % [stack, src])
 
+  result = $duk_safe_to_lstring(ctx, -1, 0)
   duk_pop(ctx)
   duk_pop(ctx)
 
@@ -29,7 +31,9 @@ proc execJavascriptFunc*(ctx: DuktapeContext, funcName: string, args: JsonNode):
   duk_json_decode(ctx, -1)
 
   if duk_pcall(ctx, 1) != 0:
-    echo("an error!")
+    discard duk_get_prop_string(ctx, -1, "stack")
+    let stack = $duk_safe_to_lstring(ctx, -1, 0)
+    echo("Duktape error: $1" % [stack])
 
   let jsonStr = $duk_json_encode(ctx, -1)
   result = parseJson(jsonStr)

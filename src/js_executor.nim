@@ -28,8 +28,15 @@ proc readThunkJson(json: JsonNode): JsonNode =
   result = %*{ "src": src }
 
 proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
-  let src = readJavascriptSource(name, babelify)
-  discard evalJavascript(jsExe.context, src)
+  discard evalJavascript(jsExe.context, """
+    function runIt(opts) {
+      require(opts.name);
+      return {};
+     }
+  """)
+  discard execJavascriptFunc(jsExe.context, "runIt", %*{ "name": name })
+  #let src = readJavascriptSource(name, babelify)
+  #discard evalJavascript(jsExe.context, src)
 
 proc injectHelperFuncs(jsExe: JSExecutor) =
   registerProc(jsExe.context, "_readJavascriptSourceJson", readThunkJson)
@@ -38,7 +45,10 @@ proc injectHelperFuncs(jsExe: JSExecutor) =
   registerProc(jsExe.context, "_ghcsStdout", ghcsStdout)
   registerProc(jsExe.context, "_ghcsShell", ghcsShell)
   registerProc(jsExe.context, "_ghcsHttp", ghcsHttp)
-  execSourceFile(jsExe, "moduleLoader")
+
+  let loader = readJavascriptSource("moduleLoader", false)
+  discard evalJavascript(jsExe.context, loader)
+  #execSourceFile(jsExe, "moduleLoader")
 
 proc newJsExecutor*(): JsExecutor =
   let ctx = createNewContext()
