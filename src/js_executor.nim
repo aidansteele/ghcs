@@ -2,6 +2,7 @@ import babelify
 import duktape
 import bundled_js
 import json
+import ghcs_native_js
 
 type
   JsExecutor* = ref object of RootObj
@@ -32,6 +33,11 @@ proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
 
 proc injectHelperFuncs(jsExe: JSExecutor) =
   registerProc(jsExe.context, "_readJavascriptSourceJson", readThunkJson)
+  registerProc(jsExe.context, "_ghcsReadFile", ghcsReadFile)
+  registerProc(jsExe.context, "_ghcsStdin", ghcsStdin)
+  registerProc(jsExe.context, "_ghcsStdout", ghcsStdout)
+  registerProc(jsExe.context, "_ghcsShell", ghcsShell)
+  registerProc(jsExe.context, "_ghcsHttp", ghcsHttp)
   execSourceFile(jsExe, "moduleLoader")
 
 proc newJsExecutor*(): JsExecutor =
