@@ -1,15 +1,14 @@
 let Ghcs = require('ghcs');
 
 export default class Rubocop {
-    constructor() {
-        this.context = 'rubocop';
-        this.directory = '.';
-        this.bundler = true;
+    constructor({context = 'rubocop', directory = '.', bundler = true}) {
+        this.context = context;
+        this.directory = directory;
+        this.bundler = bundler;
     }
 
     run(opts) {
-        let resp = { status: this.status(), metadata: this.metadata() };
-        return resp;
+        return { status: this.status(), metadata: this.metadata() };
     }
 
     rubocopOutput() {
@@ -53,5 +52,6 @@ export default class Rubocop {
 }
 
 var Runner = require('runner');
-var runner = new Runner(new Rubocop());
+var args = Runner.cliArguments();
+var runner = new Runner(new Rubocop(args));
 runner.run();
