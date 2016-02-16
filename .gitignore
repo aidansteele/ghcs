@@ -5,5 +5,5 @@
 nimcache
 
 src/babelify
-src/main
 src/tests/tester
+src/ghcs
