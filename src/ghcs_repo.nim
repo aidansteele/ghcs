@@ -1,10 +1,12 @@
 import github_api
+import github_api_types
 import ghkv
 import json_kv
 import json
 import myutils
 import git_config
 import tables
+import sequtils
 
 type
   GhcsRepo* = ref object of RootObj
@@ -21,13 +23,11 @@ proc commitInfo(repo: GhcsRepo, commitName: string): JsonNode =
   let url = "repos/" & repo.repoName & "/commits/" & commitName
   result = request(repo.api, "GET", url)
 
-proc commitStatus(repo: GhcsRepo, commitName: string, context: string): JsonNode =
+proc commitStatus(repo: GhcsRepo, commitName: string, context: string): CommitStatus =
   let url = "repos/" & repo.repoName & "/commits/" & commitName & "/status"
   let resp = request(repo.api, "GET", url)
-  let statuses = resp["statuses"].elems
-  let op = proc(x: JsonNode): bool =
-    $x["context"].str == context
-  result = findx(statuses, op)
+  let statuses = toCombinedCommitStatus(resp).statuses
+  result = findx(statuses, proc(cs: CommitStatus): bool = cs.context == context)
 
 proc commitMetadata(repo: GhcsRepo, commitName: string, context: string): JsonNode =
   let key = "metadata_" & context & "_" & commitName
