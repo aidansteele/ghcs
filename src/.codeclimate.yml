@@ -1,0 +1,21 @@
+---
+engines:
+  duplication:
+    enabled: false
+    config:
+      languages:
+      - ruby
+      - javascript
+      - python
+      - php
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "js/**.js"
+exclude_paths:
+- tests/
+- vendor/
+- nimcache/
