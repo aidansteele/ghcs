@@ -17,7 +17,17 @@ export default class CodeClimate {
                 let raw = Ghcs.readFile({ path: this.path });
                 this.codeclimateJsonOutputJson = JSON.parse(raw);
             } else {
-                let cmd = `(cd ${this.directory} && codeclimate analyze -f json)`;
+                let normalizedPath = Ghcs.shell({ command: `(cd ${this.directory} && pwd)` }).output.trim();
+                let dockerCmd = `
+                    docker run \
+                      --interactive --rm \
+                      --env CODE_PATH="${normalizedPath}" \
+                      --volume "${normalizedPath}":/code \
+                      --volume /var/run/docker.sock:/var/run/docker.sock \
+                      --volume /tmp/cc:/tmp/cc \
+                      codeclimate/codeclimate \
+                `;
+                let cmd = `(cd ${this.directory} && ${dockerCmd} analyze -f json)`;
                 let raw = Ghcs.shell({ command: cmd }).output;
                 this.codeclimateJsonOutputJson = JSON.parse(raw);
             }
