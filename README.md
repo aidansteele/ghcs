@@ -91,6 +91,16 @@ $ cat | ghcs set
         "description": "Rubocop found 72 code style violations (!)",
         "context": "rubocop_ctx"
       },
+      "comments": [
+        {
+          "path": "src/path/to/file.js",
+          "line": 47,
+          "body": "Prefer single-quoted strings when you don't need string interpolation or special symbols."
+        },
+        {
+          "body": "I'm generally displeased."
+        }
+      ],
       "metadata": {
         "violation_count": 72
       }
