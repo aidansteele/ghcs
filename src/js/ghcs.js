@@ -12,7 +12,7 @@ export default class Ghcs {
 
     static shell({ command }) {
         var nativeOpts = { command };
-        return _ghcsShell(nativeOpts);
+        return _ghcsShell(nativeOpts).output;
     }
 
     static stdin() {

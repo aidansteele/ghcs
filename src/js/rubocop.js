@@ -20,7 +20,7 @@ export default class Rubocop {
             } else {
                 let bundlerPrefix = this.bundler ? 'bundle exec ' : '';
                 let cmd = `(cd ${this.directory} && ${bundlerPrefix}rubocop --format json)`;
-                let raw = Ghcs.shell({ command: cmd }).output;
+                let raw = Ghcs.shell({ command: cmd });
                 this.rubocopOutputJson = JSON.parse(raw);
             }
         }
