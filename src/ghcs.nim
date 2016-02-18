@@ -3,6 +3,7 @@ import ghcs_repo
 import git_config
 import os
 import js_executor
+import patch
 
 let config = defaultConfig()
 let token = getEnv("GHCS_API_TOKEN")
