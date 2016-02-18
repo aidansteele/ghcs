@@ -1,6 +1,6 @@
-const pcre = staticExec("pkg-config --libs-only-L libpcre")
-const pcrePath = pcre[2 .. high(pcre)]
-{.link: pcrePath & "/libpcre.a".}
+#const pcre = staticExec("pkg-config --libs-only-L libpcre")
+#const pcrePath = pcre[2 .. high(pcre)]
+#{.link: pcrePath & "/libpcre.a".}
 
 import nre
 import options
