@@ -5,7 +5,7 @@ author        = "Aidan Steele"
 description   = "Shiny GitHub commit statuses for everyone"
 license       = "MIT"
 
-bin           = @["main"]
+bin           = @["ghcs"]
 skipDirs      = @["js"]
 
 # Dependencies
