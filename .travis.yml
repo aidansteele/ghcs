@@ -9,6 +9,9 @@ cache:
 
 language: c
 
+before_install:
+  - sudo apt-get install -y libpcre3-dev
+
 install:
   - ci/setup_nim.sh
 
