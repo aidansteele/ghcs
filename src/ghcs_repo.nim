@@ -7,19 +7,39 @@ import myutils
 import git_config
 import tables
 import sequtils
+import github_api_types
 
 type
+  GhcsCliRef* = ref object of RootObj
+    metadata: JsonNode
+    status: CommitStatus
+    commitInfo: CommitInfo
+
+  GhcsCliOutput* = seq[tuple[name: string, cliRef: GhcsCliRef]]
+
   GhcsRepo* = ref object of RootObj
     api: GithubApi
     kv: JsonKv
     repoName: string
+
+converter toJson*(cr: GhcsCliRef): JsonNode =
+  result = newJObject()
+  result["github"] = cr.commitInfo
+  if not isNil(cr.status): result["status"] = cr.status
+  if not isNil(cr.metadata): result["metadata"] = cr.metadata
+
+converter toJson*(cliOutput: GhcsCliOutput): JsonNode =
+  result = newJObject()
+
+  for tup in cliOutput:
+    add(result, tup.name, tup.cliRef)
 
 proc newGhcsRepo*(api: GithubApi, repo: string): GhcsRepo =
   let rawKv = newGhkv(api, repo)
   let jsonKv = JsonKv(kv: rawKv)
   result = GhcsRepo(api: api, kv: jsonKv, repoName: repo)
 
-proc commitInfo(repo: GhcsRepo, commitName: string): JsonNode =
+proc commitInfo(repo: GhcsRepo, commitName: string): CommitInfo =
   let url = "repos/" & repo.repoName & "/commits/" & commitName
   result = request(repo.api, "GET", url)
 
@@ -34,27 +54,26 @@ proc commitMetadata(repo: GhcsRepo, commitName: string, context: string): JsonNo
   let resp = get(repo.kv, key)
   result = if isNil(resp): newJObject() else: resp
 
-proc ghcsRefOutput(repo: GhcsRepo, commitName: string, context: string): JsonNode =
+proc ghcsRefOutput(repo: GhcsRepo, commitName: string, context: string): GhcsCliRef =
   let info = commitInfo(repo, commitName)
-  let sha = info["sha"].str
-  let status = commitStatus(repo, sha, context)
-  let metadata = commitMetadata(repo, sha, context)
+  let status = commitStatus(repo, info.sha, context)
+  let metadata = commitMetadata(repo, info.sha, context)
 
-  result = newJObject()
-  result["github"] = info
-  let contextOutput = newJObject()
-  contextOutput["metadata"] = metadata
-  contextOutput["status"] = if isNil(status): newJNull() else: status
-  result[context] = contextOutput
+  new(result)
 
-proc ghcsOutput*(repo: GhcsRepo, config: GitConfig, context: string): JsonNode =
-  let output = newJObject()
-  let relevantRefs = toTable({ "HEAD": config.sha, "HEAD^1": config.sha & "^1", "master": "master" })
+  result.commitInfo = info
+  result.metadata = metadata
+  result.status = status
+
+proc ghcsOutput*(repo: GhcsRepo, config: GitConfig, context: string): GhcsCliOutput =
+  result = @[]
+
+  let relevantRefs = toTable({
+    "HEAD": config.sha,
+    "HEAD^1": config.sha & "^1",
+    "master": "master"
+  })
 
   for name, commit in relevantRefs:
     let refOutput = ghcsRefOutput(repo, commit, context)
-    #echo("name: " & name & ", commit: " & commit)
-    #echo(refOutput)
-    output[name] = refOutput
-
-  result = output
+    add(result, (name, refOutput))
