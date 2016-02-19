@@ -1,23 +1,23 @@
 os:
   - linux
 
-sudo: required
-dist: trusty
-
 cache:
   directories:
     - $HOME/Nim
     - $HOME/nimble
     - $HOME/.nimble
+    - $HOME/libpcre
 
 language: c
 
 install:
+  - ci/setup_pcre.sh
   - ci/setup_nim.sh
 
 before_script:
   - set -e
   - export PATH=$HOME/Nim/bin:$HOME/.nimble/bin:~/.rubies/ruby-2.3.0:$PATH
+  - export LD_LIBRARY_PATH=$HOME/libpcre/lib
 
 script:
   - cd src
