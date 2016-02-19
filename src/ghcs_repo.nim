@@ -8,11 +8,13 @@ import git_config
 import tables
 import sequtils
 import github_api_types
+import line_comment
 
 type
   GhcsCliRef* = ref object of RootObj
     metadata: JsonNode
     status: CommitStatus
+    comments: seq[LineComment]
     commitInfo: CommitInfo
 
   GhcsCliOutput* = seq[tuple[name: string, cliRef: GhcsCliRef]]
@@ -27,6 +29,9 @@ converter toJson*(cr: GhcsCliRef): JsonNode =
   result["github"] = cr.commitInfo
   if not isNil(cr.status): result["status"] = cr.status
   if not isNil(cr.metadata): result["metadata"] = cr.metadata
+  if not isNil(cr.comments):
+    let comments = map(cr.comments, proc(lc: LineComment): JsonNode = lc)
+    result["comments"] = %(comments)
 
 converter toJson*(cliOutput: GhcsCliOutput): JsonNode =
   result = newJObject()
