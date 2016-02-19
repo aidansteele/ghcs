@@ -8,12 +8,16 @@ cache:
     - $HOME/.nimble
     - $HOME/libpcre
 
+addons:
+  apt:
+    packages:
+      - strace
+
 language: c
 
 install:
   - ci/setup_pcre.sh
   - ci/setup_nim.sh
-  - apt-get install strace
 
 before_script:
   - set -e
