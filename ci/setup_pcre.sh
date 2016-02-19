@@ -1,5 +1,6 @@
 #!/bin/bash
 set -x
+set -e
 
 if [ ! -d "$HOME/libpcre" ]; then
   cd $HOME
@@ -9,4 +10,6 @@ if [ ! -d "$HOME/libpcre" ]; then
   ./configure --prefix=$HOME/libpcre
   make
   make install
+else
+  ls $HOME/libpcre
 fi
