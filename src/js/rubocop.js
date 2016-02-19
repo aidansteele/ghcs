@@ -1,4 +1,5 @@
 let Ghcs = require('ghcs');
+let _ = require('underscore');
 
 export default class Rubocop {
     constructor({context = 'rubocop', directory = '.', bundler = true, path}) {
@@ -9,7 +10,11 @@ export default class Rubocop {
     }
 
     run(opts) {
-        return { status: this.status(), metadata: this.metadata() };
+        return {
+          status: this.status(),
+          metadata: this.metadata(),
+          comments: this.comments()
+        };
     }
 
     rubocopOutput() {
@@ -33,6 +38,19 @@ export default class Rubocop {
 
     metadata() {
         return { offenseCount: this.offenseCount() };
+    }
+
+    comments() {
+      var files = this.rubocopOutput().files;
+      return _.flatten(_.map(files, (file) => {
+        return _.map(file.offenses, (offense) => {
+          return {
+            path: file.path,
+            line: offense.location.line,
+            body: offense.message
+          };
+        });
+      }));
     }
 
     status() {

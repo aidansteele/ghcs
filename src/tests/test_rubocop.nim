@@ -18,10 +18,26 @@ suite "rubocop tests":
             },
             "metadata": {
               "offenseCount": 2
-            }
+            },
+            "comments": [
+              {
+                "path": "example_file.rb",
+                "line": 2,
+                "body": "Missing top-level class documentation comment."
+              },
+              {
+                "path": "example_file.rb",
+                "line": 4,
+                "body": "Prefer single-quoted strings when you don't need string interpolation or special symbols."
+              }
+            ]
           }
         }
       }
     """)
 
     check(actual == expected)
+
+  test "only passes through warnings on changed lines":
+    discard
+    # TODO
