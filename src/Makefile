@@ -6,6 +6,7 @@ ghcs: *.nim js/*.js vendor/babel/babel.js
 	strip ghcs
 
 test: ghcs
-	nim c -r tests/tester.nim
+	nim c tests/tester.nim
+	strace tests/tester
 
 default: ghcs
