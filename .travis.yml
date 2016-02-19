@@ -1,6 +1,8 @@
 os:
   - linux
 
+dist: trusty
+
 cache:
   directories:
     - $HOME/Nim
@@ -8,9 +10,6 @@ cache:
     - $HOME/.nimble
 
 language: c
-
-before_install:
-  - sudo apt-get install -y libpcre3-dev pkg-config
 
 install:
   - ci/setup_nim.sh
