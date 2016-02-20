@@ -15,7 +15,6 @@ ghcs: *.nim js/*.js vendor/babel/babel.js $(PCRE)
 	strip ghcs
 
 test: ghcs
-	nim c tests/tester.nim
-	strace tests/tester
+	nim c -r tests/tester.nim
 
 default: ghcs
