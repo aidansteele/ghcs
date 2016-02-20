@@ -8,3 +8,4 @@ src/babelify
 src/tests/tester
 src/ghcs
 src/vendor/libpcre
+src/vendor/babel/babel.js
