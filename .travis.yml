@@ -6,17 +6,11 @@ cache:
     - $HOME/Nim
     - $HOME/nimble
     - $HOME/.nimble
-    - $HOME/libpcre
-
-addons:
-  apt:
-    packages:
-      - strace
+    - vendor/libpcre
 
 language: c
 
 install:
-  - ci/setup_pcre.sh
   - ci/setup_nim.sh
 
 before_script:
