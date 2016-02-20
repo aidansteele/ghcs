@@ -6,7 +6,7 @@ cache:
     - $HOME/Nim
     - $HOME/nimble
     - $HOME/.nimble
-    - vendor/libpcre
+    - src/vendor/libpcre
 
 language: c
 
