@@ -5,7 +5,7 @@ import json
 suite "js executor tests":
   test "simple string literal hello world js execution":
     let ctx = createNewContext()
-    let response = evalJavascript(ctx, """
+    let response = evalJavascript(ctx, JS"""
       function hw() {
         return "hello, world!"
       }
@@ -17,7 +17,7 @@ suite "js executor tests":
 
   test "exec func with args":
     let ctx = createNewContext()
-    discard evalJavascript(ctx, """
+    discard evalJavascript(ctx, JS"""
       function hw(args) {
         return {resp: "hello, world of " + args.name}
       }
