@@ -6,18 +6,20 @@ import duktape_ffi
 # i don't want to import duktape_ffi everywhere
 type DuktapeContext* = duktape_ffi.DuktapeContext
 
-proc evalJavascript*(ctx: DuktapeContext, src: string): string =
+type JS* = distinct string
+
+proc evalJavascript*(ctx: DuktapeContext, src: JS): string =
   duk_push_global_object(ctx)
 
   discard duk_push_string(ctx, "filename")
   let flags: cuint = DUK_COMPILE_EVAL or DUK_COMPILE_SAFE or DUK_COMPILE_NOSOURCE or DUK_COMPILE_STRLEN
 
-  let res = duk_eval_raw(ctx, src, 0, flags)
+  let res = duk_eval_raw(ctx, string(src), 0, flags)
 
   if res != 0:
     discard duk_get_prop_string(ctx, -1, "stack")
     let stack = $duk_safe_to_lstring(ctx, -1, 0)
-    echo("Duktape error: $1 from src: $2" % [stack, src])
+    echo("Duktape error: $1 from src: $2" % [stack, string(src)])
 
   result = $duk_safe_to_lstring(ctx, -1, 0)
   duk_pop(ctx)

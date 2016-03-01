@@ -8,7 +8,7 @@ type
   JsExecutor* = ref object of RootObj
     context: DuktapeContext
 
-proc readJavascriptSource*(name: string, babelify: bool): string =
+proc readJavascriptSource*(name: string, babelify: bool): JS =
   let bundledName = name & ".js"
   var src = ""
 
@@ -20,15 +20,15 @@ proc readJavascriptSource*(name: string, babelify: bool): string =
   if babelify:
     src = babelifyString(src)
 
-  result = src
+  result = JS(src)
 
 proc readThunkJson(json: JsonNode): JsonNode =
   let name = json["name"].str
   let src = readJavascriptSource(name, false)
-  result = %*{ "src": src }
+  result = %*{ "src": string(src) }
 
 proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
-  discard evalJavascript(jsExe.context, """
+  discard evalJavascript(jsExe.context, JS"""
     function runIt(opts) {
       require(opts.name);
       return {};
