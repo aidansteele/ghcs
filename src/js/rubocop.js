@@ -9,7 +9,7 @@ export default class Rubocop {
         this.path = path;
     }
 
-    run(opts) {
+    run() {
         return {
           status: this.status(),
           metadata: this.metadata(),
