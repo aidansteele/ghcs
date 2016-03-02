@@ -1,5 +1,5 @@
 export default class Ghcs {
-    static http({ url, method, body, headers }) {
+    static http({ url, method, body = '', headers = {} }) {
         var nativeOpts = { url, method, body, headers };
         return _ghcsHttp(nativeOpts);
     }
