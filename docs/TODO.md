@@ -5,14 +5,15 @@ TO DO before 1.0 in no particular order:
 - [x] Bundle underscore.js
 - [ ] Some kind of AWS helpers in JS?
 - [ ] Raise compile-time errors if babelifying fails
-- [ ] Link PCRE statically
+- [x] Link PCRE statically
 - [ ] Investigate unit testing frameworks for nim
 - [ ] Bundle helpful standard checks (see below)
 - [ ] Validate works correctly where parent or master is a merge commit
 - [ ] Check out the env vars / gitenv in various CIs (buildkite, bamboo, travis)
 - [ ] Support Bitbucket? GitLab?
 - [ ] Ability to leave line-specific comments (see houndci.com)
-- [ ] CI to upload artifacts to S3, create signed deb/rpm packages, push to own apt repo
+- [x] CI to upload artifacts to S3
+- [ ] CI to create signed deb/rpm packages, push to own apt repo
 - [ ] `ci/setup_nim.sh` should check out nim/nimble refs specified in top-level dir (not HEAD)
 - [x] Ensure that generated binary isn't bigger than it should be (debug mode?)
 - [x] Split out docs into `docs/` dir
@@ -23,10 +24,10 @@ Possibly bundled checks:
 - [ ] Whatever most common checks are around workplace
 - [ ] JUnit XML
 - [x] Rubocop JSON (also look at `DisplayCopNames`, `DisplayStyleGuide`)
-- [ ] Code Climate
+- [x] Code Climate
 - [ ] simplecov coverage (w/ persistence)
 - [ ] "rubycritic" (check it out)
-- [ ] Bundler audit
+- [x] Bundler audit
 - [ ] Outdated deps (gemfile, npm shrinkwrap, etc)
 - [ ] iOS: swiftlint, oclint
 - [ ] JSHint
