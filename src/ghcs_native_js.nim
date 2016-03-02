@@ -31,7 +31,7 @@ proc ghcsShell*(json: JsonNode): JsonNode {.procvar.} =
   let cmd = json["command"].str
   let inputData = json["stdin"].str
 
-  var p = startProcess(cmd, options={poEchoCmd, poEvalCommand})
+  var p = startProcess(cmd, options={poEvalCommand})
   var inp = inputStream(p)
   if len(inputData) > 0:
     write(inp, inputData)
