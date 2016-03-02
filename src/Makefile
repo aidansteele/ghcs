@@ -12,11 +12,15 @@ $(PCRE):
 $(BABEL): vendor/babel/babel.orig.js vendor/babel/babel.patch
 	patch vendor/babel/babel.orig.js -o vendor/babel/babel.js < vendor/babel/babel.patch
 
-ghcs: *.nim js/*.js $(BABEL) $(PCRE)
+ghcs: *.nim js/*.js $(BABEL) $(PCRE) ## Build ghcs itself
 	nim c -d:release --passC:-flto ghcs.nim
 	strip ghcs
 
-test: ghcs
+test: ghcs ## Run unit tests
 	nim c -r tests/tester.nim
 
-default: ghcs
+.PHONY: help
+.DEFAULT_GOAL := help
+
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
