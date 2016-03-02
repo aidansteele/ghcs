@@ -10,7 +10,9 @@ macro bundleUpJavascript(): expr =
   for file in files:
      let src = """, "$1": staticExec("nim c -r --verbosity:0 babelify.nim 2>/dev/null", staticRead("js/$1"), "0.1")""" % [file]
      r = r & src
-  r = r & """, "underscore.js": staticRead("vendor/underscore/underscore.js")"""
+  r = r & """
+    , "underscore.js": staticRead("vendor/underscore/underscore.js")
+  """
   r = r & "}.toTable"
   result.add(parseStmt(r))
 
