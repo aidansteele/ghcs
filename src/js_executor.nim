@@ -41,6 +41,7 @@ proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
 proc injectHelperFuncs(jsExe: JSExecutor) =
   registerProc(jsExe.context, "_readJavascriptSourceJson", readThunkJson)
   registerProc(jsExe.context, "_ghcsReadFile", ghcsReadFile)
+  registerProc(jsExe.context, "_ghcsWriteFile", ghcsWriteFile)
   registerProc(jsExe.context, "_ghcsStdin", ghcsStdin)
   registerProc(jsExe.context, "_ghcsStdout", ghcsStdout)
   registerProc(jsExe.context, "_ghcsShell", ghcsShell)

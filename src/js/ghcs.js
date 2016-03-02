@@ -10,6 +10,11 @@ export default class Ghcs {
         return ret.contents;
     }
 
+    static writeFile({ path, data }) {
+        var nativeOpts = { path, data };
+        var ret = _ghcsWriteFile(nativeOpts);
+    }
+
     static shell({ command }) {
         var nativeOpts = { command };
         return _ghcsShell(nativeOpts).output;

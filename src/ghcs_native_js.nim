@@ -11,6 +11,12 @@ proc ghcsReadFile*(json: JsonNode): JsonNode {.procvar.} =
   let contents = readFile(path)
   result = %*{ "contents": contents }
 
+proc ghcsWriteFile*(json: JsonNode): JsonNode {.procvar.} =
+  let path = json["path"].str
+  let data = json["data"].str
+  writeFile(path, data)
+  result = %*{ "success": true }
+
 proc ghcsStdin*(json: JsonNode): JsonNode {.procvar.} =
   let str = readAll(stdin)
   result = %* { "stdin": str }
