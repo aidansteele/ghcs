@@ -3,6 +3,7 @@ import osproc
 import httpclient
 import strutils
 import strtabs
+import streams
 import sequtils
 import os
 
@@ -28,8 +29,21 @@ proc ghcsStdout*(json: JsonNode): JsonNode {.procvar.} =
 
 proc ghcsShell*(json: JsonNode): JsonNode {.procvar.} =
   let cmd = json["command"].str
-  let (outp, exitCode) = execCmdEx(cmd)
-  result = %*{ "output": outp, "exitCode": exitCode }
+  let inputData = json["stdin"].str
+
+  var p = startProcess(cmd, options={poEchoCmd, poEvalCommand})
+  var inp = inputStream(p)
+  if len(inputData) > 0:
+    write(inp, inputData)
+    close(inp)
+
+  let outp = outputStream(p)
+  let outputData = readAll(outp)
+
+  let exitCode = peekExitCode(p)
+  assert(exitCode != -1)
+
+  result = %*{ "stdout": outputData, "exitCode": exitCode }
 
 proc ghcsArgv*(json: JsonNode): JsonNode {.procvar.} =
   let argv = map(commandLineParams(), proc(x: TaintedString): JsonNode = newJString($x))

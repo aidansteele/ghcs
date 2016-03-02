@@ -15,9 +15,9 @@ export default class Ghcs {
         var ret = _ghcsWriteFile(nativeOpts);
     }
 
-    static shell({ command }) {
-        var nativeOpts = { command };
-        return _ghcsShell(nativeOpts).output;
+    static shell({ command, stdin = '' }) {
+        var nativeOpts = { command, stdin };
+        return _ghcsShell(nativeOpts).stdout;
     }
 
     static stdin() {
