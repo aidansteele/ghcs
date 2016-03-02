@@ -27,4 +27,9 @@ when isMainModule:
   else:
     src = readAll(stdin)
 
-  echo(babelifyString(src))
+  try:
+    let babelified = babelifyString(src)
+    echo(babelified)
+  except:
+    echo("Babelifying failed")
+    programResult = 1

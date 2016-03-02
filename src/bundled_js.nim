@@ -18,6 +18,19 @@ macro bundleUpJavascript(): expr =
 
 bundleUpJavascript()
 
+macro checker(): expr =
+  result = newStmtList()
+  var babelErrors = newSeq[string]()
+
+  for k, v in bundledJs:
+    # todo: looking for a string is lame, how can we check exit code of staticExec?
+    if contains(v, "Babelifying failed"):
+      add(babelErrors, v)
+
+  if len(babelErrors) > 0:
+    error("Babelifying errors:\n" & join(babelErrors, "\n"))
+checker()
+
 proc getBundledFilenames*(): seq[string] =
   toSeq(keys(bundledJs))
 
