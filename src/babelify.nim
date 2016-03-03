@@ -1,4 +1,4 @@
-import duktape
+import nimduktape
 import json
 
 proc babelifyString*(src: string): string =

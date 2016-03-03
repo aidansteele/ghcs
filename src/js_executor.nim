@@ -1,5 +1,5 @@
 import babelify
-import duktape
+import nimduktape
 import bundled_js
 import json
 import ghcs_native_js
