@@ -4,7 +4,7 @@ TO DO before 1.0 in no particular order:
 - [ ] Run ES6 scripts using Babel
 - [x] Bundle underscore.js
 - [ ] Some kind of AWS helpers in JS?
-- [ ] Raise compile-time errors if babelifying fails
+- [x] Raise compile-time errors if babelifying fails
 - [x] Link PCRE statically
 - [ ] Investigate unit testing frameworks for nim
 - [ ] Bundle helpful standard checks (see below)
