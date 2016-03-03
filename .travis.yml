@@ -3,10 +3,8 @@ os:
 
 cache:
   directories:
-    - $HOME/Nim
-    - $HOME/nimble
-    - $HOME/.nimble
     - src/vendor/libpcre
+    - src/vendor/Nim
 
 language: c
 
@@ -15,13 +13,8 @@ addons:
     paths:
       - ghcs
 
-install:
-  - ci/setup_nim.sh
-
 before_script:
   - set -e
-  - export PATH=$HOME/Nim/bin:$HOME/.nimble/bin:~/.rubies/ruby-2.3.0:$PATH
-  - export LD_LIBRARY_PATH=$HOME/libpcre/lib
 
 script:
   - cd src

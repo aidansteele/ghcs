@@ -10,3 +10,4 @@ src/ghcs
 src/vendor/libpcre
 src/vendor/babel/babel.js
 src/pcre-8.38*
+src/vendor/Nim
