@@ -14,7 +14,8 @@ TO DO before 1.0 in no particular order:
 - [ ] Ability to leave line-specific comments (see houndci.com)
 - [x] CI to upload artifacts to S3
 - [ ] CI to create signed deb/rpm packages, push to own apt repo
-- [ ] `ci/setup_nim.sh` should check out nim/nimble refs specified in top-level dir (not HEAD)
+- [x] vendor nim
+- [ ] `make nim` should vendor specified nim ver (not always HEAD)
 - [x] Ensure that generated binary isn't bigger than it should be (debug mode?)
 - [x] Split out docs into `docs/` dir
 - [ ] Generate manpages for deb/rpm packages (use a markdown2man util)
