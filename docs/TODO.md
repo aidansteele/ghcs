@@ -10,7 +10,7 @@ TO DO before 1.0 in no particular order:
 - [ ] Bundle helpful standard checks (see below)
 - [ ] Validate works correctly where parent or master is a merge commit
 - [ ] Check out the env vars / gitenv in various CIs (buildkite, bamboo, travis)
-- [ ] Support Bitbucket? GitLab?
+- [ ] Support [Bitbucket][bitbucket-api]? [GitLab][gitlab-api]?
 - [ ] Ability to leave line-specific comments (see houndci.com)
 - [x] CI to upload artifacts to S3
 - [ ] CI to create signed deb/rpm packages, push to own apt repo
@@ -20,6 +20,9 @@ TO DO before 1.0 in no particular order:
 - [x] Split out docs into `docs/` dir
 - [ ] Generate manpages for deb/rpm packages (use a markdown2man util)
 - [ ] Check out code coverage (for ghcs itself): https://github.com/yglukhov/coverage
+
+[bitbucket-api]: https://confluence.atlassian.com/bitbucket/changesets-resource-296095208.html#changesetsResource-POSTanewcommentonachangeset
+[gitlab-api]: https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/commits.md#post-the-build-status-to-a-commit
 
 Possibly bundled checks:
 - [ ] Whatever most common checks are around workplace
