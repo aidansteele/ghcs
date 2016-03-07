@@ -38,11 +38,9 @@ converter toCombinedCommitStatus*(node: JsonNode): CombinedCommitStatus =
 
 type CommitInfo* = ref object of RootObj
   sha*: string
-  sourceNode: JsonNode
 
 converter toCommitInfo*(node: JsonNode): CommitInfo =
-  result = CommitInfo(sha: node["sha"].str, sourceNode: copy(node))
+  result = CommitInfo(sha: node["sha"].str)
 
 converter toJson*(ci: CommitInfo): JsonNode =
-  result = ci.sourceNode
-  result["sha"] = %(ci.sha)
+  result = %*{ "sha": ci.sha }

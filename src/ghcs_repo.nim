@@ -26,7 +26,7 @@ type
 
 converter toJson*(cr: GhcsCliRef): JsonNode =
   result = newJObject()
-  result["github"] = cr.commitInfo
+  result["git"] = cr.commitInfo
   if not isNil(cr.status): result["status"] = cr.status
   if not isNil(cr.metadata): result["metadata"] = cr.metadata
   if not isNil(cr.comments):
