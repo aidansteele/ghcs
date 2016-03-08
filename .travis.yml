@@ -9,9 +9,12 @@ cache:
 language: c
 
 addons:
+  apt_packages:
+    - pandoc
   artifacts:
     paths:
-      - ghcs
+      - src/ghcs
+      - ghcs.1
 
 before_script:
   - set -e
@@ -20,3 +23,5 @@ script:
   - cd src
   - make ghcs
   - make test
+  - cd ..
+  - pandoc docs/man.md -s -o ghcs.1
