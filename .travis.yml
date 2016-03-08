@@ -24,5 +24,6 @@ script:
   - make ghcs
   - make test
   - make deb
+  - deb-s3 upload --bucket ghcs-apt ghcs-1.0_amd64.deb
   - cd ..
   - pandoc docs/man.md -s -o ghcs.1
