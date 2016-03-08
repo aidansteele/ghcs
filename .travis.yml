@@ -23,5 +23,6 @@ script:
   - cd src
   - make ghcs
   - make test
+  - make deb
   - cd ..
   - pandoc docs/man.md -s -o ghcs.1
