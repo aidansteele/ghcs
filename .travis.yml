@@ -11,7 +11,7 @@ language: c
 addons:
   apt_packages:
     - pandoc
-    - upx
+    - upx-ucl
   artifacts:
     paths:
       - ghcs
