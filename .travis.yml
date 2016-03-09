@@ -11,19 +11,17 @@ language: c
 addons:
   apt_packages:
     - pandoc
+    - upx
   artifacts:
     paths:
-      - src/ghcs
+      - ghcs
       - ghcs.1
 
 before_script:
   - set -e
+  - gem install fpm deb-s3
 
 script:
-  - cd src
-  - make ghcs
   - make test
   - make deb
-  - deb-s3 upload --bucket ghcs-apt ghcs_1.0_amd64.deb
-  - cd ..
-  - pandoc docs/man.md -s -o ghcs.1
+  - deb-s3 upload --bucket ghcs-apt --codename unstable ghcs_1.0_amd64.deb

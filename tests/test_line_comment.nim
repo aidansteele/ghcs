@@ -1,6 +1,6 @@
 import unittest
-import patch
-import line_comment
+import nim/patch
+import nim/line_comment
 
 suite "line comment tests":
   test "select only applicable line comments":

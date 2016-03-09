@@ -8,10 +8,11 @@ macro bundleUpJavascript(): expr =
   var r = ""
   r = r & """const bundledJs = {"_": nil"""
   for file in files:
-     let src = """, "$1": staticExec("vendor/Nim/bin/nim c -r --verbosity:0 babelify.nim 2>/dev/null", staticRead("js/$1"), "0.1")""" % [file]
+     hint("Babelifying $1" % [file])
+     let src = """, "$1": staticExec("vendor/Nim/bin/nim c -r --verbosity:0 nim/babelify.nim 2>/dev/null", staticRead("../js/$1"), "0.1")""" % [file]
      r = r & src
   r = r & """
-    , "underscore.js": staticRead("vendor/underscore/underscore.js")
+    , "underscore.js": staticRead("../vendor/underscore/underscore.js")
   """
   r = r & "}.toTable"
   result.add(parseStmt(r))

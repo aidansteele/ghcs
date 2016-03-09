@@ -4,10 +4,13 @@
 *.DS_Store
 nimcache
 
-src/babelify
-src/tests/tester
-src/ghcs
-src/vendor/libpcre
-src/vendor/babel/babel.js
-src/pcre-8.38*
-src/vendor/Nim
+nim/babelify
+nim/tests/tester
+ghcs
+vendor/libpcre
+vendor/babel/babel.js
+pcre-8.38*
+vendor/Nim
+ghcs_1.0_amd64.deb
+ghcs.1
+tests/tester

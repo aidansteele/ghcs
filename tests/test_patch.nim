@@ -1,5 +1,5 @@
 import unittest
-import patch
+import nim/patch
 
 suite "patch-file parsing tests":
   test "patch-file modified line numbers":

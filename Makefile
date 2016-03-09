@@ -4,6 +4,7 @@ PCRE = $(PCRE_PREFIX)/lib/libpcre.a
 NIM = $(TOP_DIR)/vendor/Nim/bin/nim
 BABEL = vendor/babel/babel.js
 DEBFILE = ghcs_1.0_amd64.deb
+DOCS = ghcs.1
 
 $(NIM): ## Build nim itself from master
 	git clone --depth 1 https://github.com/nim-lang/Nim.git vendor/Nim
@@ -17,21 +18,22 @@ $(PCRE):
 $(BABEL): vendor/babel/babel.orig.js vendor/babel/babel.patch
 	patch vendor/babel/babel.orig.js -o vendor/babel/babel.js < vendor/babel/babel.patch
 
-ghcs: *.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
-	$(NIM) c -d:release --passC:-flto ghcs.nim
+ghcs: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
+	$(NIM) c -d:release --passC:-flto nim/ghcs.nim
+	mv nim/ghcs .
 	strip ghcs
+	upx ghcs
+
+$(DOCS): docs/man.md
+	pandoc docs/man.md -s -o ghcs.1
 
 test: ghcs ## Run unit tests
 	$(NIM) c -r tests/tester.nim
 
-debtools:
-	gem install fpm
-	gem install deb-s3
-
 $(DEBFILE):
 	./makedeb.sh
 
-deb: test debtools $(DEBFILE) ## Make deb file
+deb: test $(DOCS) $(DEBFILE) ## Make deb file
 
 .PHONY: help
 .DEFAULT_GOAL := help

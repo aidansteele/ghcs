@@ -4,7 +4,7 @@ import json
 proc babelifyString*(src: string): string =
   let ctx = createNewContext()
 
-  const babel = JS(staticRead("vendor/babel/babel.js"))
+  const babel = JS(staticRead("../vendor/babel/babel.js"))
   discard evalJavascript(ctx, babel)
 
   discard evalJavascript(ctx, JS"""

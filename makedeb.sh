@@ -10,6 +10,7 @@ mkdir -p $BINDIR
 mkdir -p $MANDIR
 
 cp "ghcs" "$BINDIR/"
+cp "ghcs.1" "$MANDIR/"
 # copy the man file too
 
 rm "ghcs_1.0_amd64.deb"

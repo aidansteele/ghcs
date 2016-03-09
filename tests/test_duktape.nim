@@ -1,5 +1,5 @@
 import unittest
-import nimduktape
+import nim/nimduktape
 import json
 
 suite "js executor tests":

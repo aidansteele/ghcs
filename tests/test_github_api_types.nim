@@ -1,5 +1,5 @@
 import unittest
-import github_api_types
+import nim/github_api_types
 import json
 
 suite "github api types":
