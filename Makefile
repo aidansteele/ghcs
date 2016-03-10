@@ -24,8 +24,8 @@ ghcs: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
 	strip ghcs
 	upx ghcs
 
-$(DOCS): docs/man.md
-	pandoc docs/man.md -s -o ghcs.1
+$(DOCS): docs/MAN.md
+	pandoc docs/MAN.md -s -o ghcs.1
 
 test: ghcs ## Run unit tests
 	$(NIM) c -r tests/tester.nim
