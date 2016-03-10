@@ -7,8 +7,7 @@ DEBFILE = ghcs_1.0_amd64.deb
 DOCS = ghcs.1
 
 $(NIM): ## Build nim itself from master
-	git clone --depth 1 https://github.com/nim-lang/Nim.git vendor/Nim
-	cd vendor/Nim && sh bootstrap.sh
+	./makenim.sh
 
 $(PCRE):
 	wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.38.tar.bz2
