@@ -3,3 +3,4 @@ import test_duktape
 import test_rubocop
 import test_line_comment
 import test_github_api_types
+import test_swiftlint

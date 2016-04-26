@@ -16,6 +16,24 @@ configuration options:
 
 [rubocop]: https://github.com/bbatsov/rubocop
 
+## `swiftlint`
+
+> A tool to enforce Swift style and conventions, loosely based on GitHub's Swift 
+> Style Guide.
+
+-- [Swiftlint README][swiftlint]
+
+The built-in `swiftlint` check by default will execute 
+`swiftlint lint --reporter json --quiet` in the working directory. There are a few 
+configuration options:
+
+* `--directory path/to/swift/src` if your Swift code doesn't reside in `$PWD`.
+* `--path path/to/swift.json` if you have already saved the Swiftlint output 
+  in a previous step.
+
+[swiftlint]: https://github.com/realm/SwiftLint
+
+
 ## `codeclimate`
 
 > Get automated code review for test coverage, complexity, duplication, security, 

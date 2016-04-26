@@ -33,5 +33,6 @@ Possibly bundled checks:
 - [ ] "rubycritic" (check it out)
 - [x] Bundler audit
 - [ ] Outdated deps (gemfile, npm shrinkwrap, etc)
-- [ ] iOS: swiftlint, oclint
+- [x] iOS: swiftlint
+- [ ] iOS: oclint
 - [ ] JSHint

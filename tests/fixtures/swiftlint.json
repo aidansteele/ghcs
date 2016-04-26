@@ -1,0 +1,11 @@
+[
+  {
+    "reason" : "if,for,while,do statements shouldn't wrap their conditionals in parentheses.",
+    "character" : 9,
+    "file" : "\/Users\/aidan\/dev\/ghcs-nim\/wat\/wat\/wat\/ErrorHandler.swift",
+    "rule_id" : "control_statement",
+    "line" : 15,
+    "severity" : "Warning",
+    "type" : "Control Statement"
+  }
+]
