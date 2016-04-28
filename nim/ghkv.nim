@@ -1,6 +1,7 @@
 import json
 import base64
 import strutils
+import uri
 
 import github_api
 
@@ -10,7 +11,8 @@ type
     namespace: string
 
 proc newGhkv*(api: GithubApi, repo: string, namespace: string = "ghkv"): Ghkv =
-  let newApi = GithubApi(baseUrl: api.baseUrl & "repos/" & repo & "/", token: api.token)
+  let uri = combine(api.baseUri, parseUri("repos/" & repo & "/"))
+  let newApi = GithubApi(baseUri: uri, token: api.token)
   result = Ghkv(api: newApi, namespace: namespace)
 
 proc get*(ghkv: Ghkv, key: string): string =
@@ -20,7 +22,7 @@ proc get*(ghkv: Ghkv, key: string): string =
   if isNil(obj): return nil
 
   # TODO: we really need to use a URL library
-  let blobUrl = replace(obj["url"].str, ghkv.api.baseUrl, "")
+  let blobUrl = replace(obj["url"].str, $ghkv.api.baseUri, "")
   let blob = request(ghkv.api, "GET", blobUrl)
   result = decode(blob["content"].str)
 

@@ -1,10 +1,11 @@
 import httpclient
 import base64
 import json
+import uri
 
 type
   GithubApi* = ref object of RootObj
-    baseUrl*: string
+    baseUri*: Uri
     token*: string
 
 proc authHeader(api: GithubApi): string =
@@ -16,7 +17,7 @@ proc request*(api: GithubApi, httpMethod: string, url: string, body: JsonNode = 
   let bodyStr = if isNil(body): "" else: $body
   let lengthHeader = "Content-Length: " & $len(bodyStr) & "\c\L"
   let extraHeaders = authHeader(api) & lengthHeader
-  let fullUrl = api.baseUrl & url
+  let uri = combine(api.baseUri, parseUri(url))
   let prefixedMethod = "http" & httpMethod
-  let resp = request(fullUrl, prefixedMethod, extraHeaders = extraHeaders, body = bodyStr)
+  let resp = request($uri, prefixedMethod, extraHeaders = extraHeaders, body = bodyStr)
   result = parseJson(resp.body)

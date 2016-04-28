@@ -7,7 +7,7 @@ import patch
 
 let config = defaultConfig()
 let token = getEnv("GHCS_API_TOKEN")
-let api = GithubApi(baseUrl: config.baseUrl, token: token)
+let api = GithubApi(baseUri: config.baseUri, token: token)
 let repo = newGhcsRepo(api, config.repoName)
 
 if paramStr(1) == "js":
