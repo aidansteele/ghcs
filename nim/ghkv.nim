@@ -18,6 +18,8 @@ proc newGhkv*(api: GithubApi, repo: string, namespace: string = "ghkv"): Ghkv =
 proc get*(ghkv: Ghkv, key: string): string =
   let url = "git/refs/" & ghkv.namespace & "/" & key
   let resp = request(ghkv.api, "GET", url)
+  if not hasKey(resp, "object"): return nil
+  
   let obj = resp["object"]
   if isNil(obj): return nil
 
