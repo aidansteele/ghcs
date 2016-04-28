@@ -4,7 +4,7 @@ import json
 
 suite "swiftlint tests":
   test "swiftlint integration test":
-    let (outp, exitCode) = execCmdEx("./ghcs js swiftlint --path tests/fixtures/swiftlint.json")
+    let (outp, exitCode) = execCmdEx("nim/ghcs js swiftlint --path tests/fixtures/swiftlint.json")
     let actual = parseJSON(outp)
     let expected = parseJSON("""
       {

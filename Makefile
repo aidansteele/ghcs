@@ -1,7 +1,7 @@
 TOP_DIR = $(shell pwd)
 PCRE_PREFIX = $(TOP_DIR)/vendor/libpcre
 PCRE = $(PCRE_PREFIX)/lib/libpcre.a
-NIM = $(TOP_DIR)/vendor/Nim/bin/nim
+NIM = nim #$(TOP_DIR)/vendor/Nim/bin/nim
 BABEL = vendor/babel/babel.js
 DEBFILE = ghcs_1.0_amd64.deb
 DOCS = ghcs.1
@@ -17,7 +17,7 @@ $(PCRE):
 $(BABEL): vendor/babel/babel.orig.js vendor/babel/babel.patch
 	patch vendor/babel/babel.orig.js -o vendor/babel/babel.js < vendor/babel/babel.patch
 
-ghcs: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
+release: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
 	$(NIM) c -d:release --passC:-flto nim/ghcs.nim
 	mv nim/ghcs .
 	strip ghcs
@@ -26,7 +26,9 @@ ghcs: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
 $(DOCS): docs/MAN.md
 	pandoc docs/MAN.md -s -o ghcs.1
 
-test: ghcs ## Run unit tests
+test: ## Run unit tests
+	$(NIM) c -d:testing -r nim/ghcs.nim
+	$(NIM) c nim/ghcs.nim
 	$(NIM) c -r tests/tester.nim
 
 $(DEBFILE):

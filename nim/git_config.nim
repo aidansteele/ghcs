@@ -58,7 +58,7 @@ proc envConfig*(): GitConfig =
   result = (repoName: it.repo, baseUri: parseUri(url), sha: sha)
   echo result
   
-when isMainModule or defined(testing):
+when defined(testing):
   import unittest
   suite "git config tests":
     test "handles public github special case":

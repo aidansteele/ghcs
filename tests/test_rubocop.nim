@@ -4,7 +4,7 @@ import json
 
 suite "rubocop tests":
   test "rubocop integration test":
-    let (outp, exitCode) = execCmdEx("./ghcs js rubocop --path tests/fixtures/rubocop.json")
+    let (outp, exitCode) = execCmdEx("nim/ghcs js rubocop --path tests/fixtures/rubocop.json")
     let actual = parseJSON(outp)
     let expected = parseJSON("""
       {

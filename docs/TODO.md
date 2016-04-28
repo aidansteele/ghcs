@@ -20,6 +20,7 @@ TO DO before 1.0 in no particular order:
 - [x] Split out docs into `docs/` dir
 - [ ] Generate manpages for deb/rpm packages (use a markdown2man util)
 - [ ] Check out code coverage (for ghcs itself): https://github.com/yglukhov/coverage
+- [ ] JS blackbox testing written in nim is a hack
 
 [bitbucket-api]: https://confluence.atlassian.com/bitbucket/changesets-resource-296095208.html#changesetsResource-POSTanewcommentonachangeset
 [gitlab-api]: https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/commits.md#post-the-build-status-to-a-commit

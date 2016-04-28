@@ -14,4 +14,4 @@ To build docs, you will need `pandoc`.
 
     $ git clone git@github.com:aidansteele/ghcs.git
     $ cd ghcs
-    $ make ghcs    
+    $ make release    
