@@ -26,7 +26,7 @@ release: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
 $(DOCS): docs/MAN.md
 	pandoc docs/MAN.md -s -o ghcs.1
 
-test: ## Run unit tests
+test: $(NIM) ## Run unit tests
 	$(NIM) c -d:testing -r nim/ghcs.nim
 	$(NIM) c nim/ghcs.nim
 	$(NIM) c -r tests/tester.nim
