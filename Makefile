@@ -17,7 +17,7 @@ $(PCRE):
 $(BABEL): vendor/babel/babel.orig.js vendor/babel/babel.patch
 	patch vendor/babel/babel.orig.js -o vendor/babel/babel.js < vendor/babel/babel.patch
 
-release: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
+ghcs: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
 	$(NIM) c -d:release --passC:-flto nim/ghcs.nim
 	mv nim/ghcs .
 	strip ghcs
@@ -26,7 +26,7 @@ release: nim/*.nim js/*.js $(BABEL) $(PCRE) $(NIM) ## Build ghcs itself
 $(DOCS): docs/MAN.md
 	pandoc docs/MAN.md -s -o ghcs.1
 
-test: $(NIM) ## Run unit tests
+test: ghcs ## Run unit tests
 	$(NIM) c -d:testing -r nim/ghcs.nim
 	$(NIM) c nim/ghcs.nim
 	$(NIM) c -r tests/tester.nim
