@@ -16,7 +16,7 @@ proc authHeader(api: GithubApi): string =
 
 proc logItMaybe(httpMethod: string, uri: Uri, body: string, response: Response) =
   let outLocation = getEnv("HTTP_LOGGING")
-  if not isNil(outLocation):
+  if len(outLocation) > 0:
     let fd = open(outLocation, fmAppend)
     let node = %*{ 
       "method": httpMethod, 
@@ -34,7 +34,12 @@ proc request*(api: GithubApi, httpMethod: string, url: string, body: JsonNode = 
   let extraHeaders = authHeader(api) & lengthHeader
   let uri = combine(api.baseUri, parseUri(url))
   let prefixedMethod = "http" & httpMethod
-  let resp = request($uri, prefixedMethod, extraHeaders = extraHeaders, body = bodyStr)
+  
+  var proxy: Proxy
+  if existsEnv("http_proxy"):
+    proxy = newProxy(getEnv("http_proxy"))
+  
+  let resp = request($uri, prefixedMethod, extraHeaders = extraHeaders, body = bodyStr, proxy = proxy)
   result = parseJson(resp.body)
   
   logItMaybe(httpMethod, uri, bodyStr, resp)
