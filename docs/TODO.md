@@ -18,7 +18,7 @@ TO DO before 1.0 in no particular order:
 - [ ] `make nim` should vendor specified nim ver (not always HEAD)
 - [x] Ensure that generated binary isn't bigger than it should be (debug mode?)
 - [x] Split out docs into `docs/` dir
-- [ ] Generate manpages for deb/rpm packages (use a markdown2man util)
+- [x] Generate manpages for deb/rpm packages (use a markdown2man util)
 - [ ] Check out code coverage (for ghcs itself): https://github.com/yglukhov/coverage
 - [ ] JS blackbox testing written in nim is a hack
 
