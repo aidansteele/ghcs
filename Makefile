@@ -1,7 +1,7 @@
 TOP_DIR = $(shell pwd)
 PCRE_PREFIX = $(TOP_DIR)/vendor/libpcre
 PCRE = $(PCRE_PREFIX)/lib/libpcre.a
-NIM = nim #$(TOP_DIR)/vendor/Nim/bin/nim
+NIM = $(TOP_DIR)/vendor/Nim/bin/nim
 BABEL = vendor/babel/babel.js
 DEBFILE = ghcs_1.0_amd64.deb
 DOCS = ghcs.1
