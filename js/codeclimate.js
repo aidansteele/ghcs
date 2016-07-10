@@ -1,7 +1,7 @@
-let Ghcs = require('ghcs');
+import Ghcs from "ghcs";
 
 export default class CodeClimate {
-    constructor({context = 'codeclimate', directory = '.', path}) {
+    constructor({context = "codeclimate", directory = ".", path}) {
         this.context = context;
         this.directory = directory;
         this.path = path;
@@ -44,28 +44,28 @@ export default class CodeClimate {
     }
 
     status() {
-        var count = this.issueCount();
+        let count = this.issueCount();
         var description;
         var state;
 
         if (count == 0) {
-            state = 'success';
-            description = 'Code Climate found no issues';
+            state = "success";
+            description = "Code Climate found no issues";
         } else {
-            state = 'failure';
+            state = "failure";
             description = `Code Climate found ${count} issues`;
         }
 
         return {
             state,
             description,
-            target_url: '',
+            target_url: "",
             context: this.context
         };
     }
 }
 
-var Runner = require('runner');
-var args = Runner.cliArguments();
-var runner = new Runner(new CodeClimate(args));
+import Runner from "runner";
+let args = Runner.cliArguments();
+let runner = new Runner(new CodeClimate(args));
 runner.run();

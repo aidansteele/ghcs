@@ -1,5 +1,5 @@
-const Ghcs = require('ghcs');
-const _ = require('underscore');
+import Ghcs from "ghcs";
+import _ from "underscore";
 
 const rubyCode = `
     require 'bundler'
@@ -36,7 +36,7 @@ const rubyCode = `
 `;
 
 export default class Gemfile {
-    constructor({context = 'gemfile', directory = '.', description = false}) {
+    constructor({context = "gemfile", directory = ".", description = false}) {
         this.context = context;
         this.directory = directory;
         this.description = description;
@@ -61,17 +61,17 @@ export default class Gemfile {
         var state;
 
         if (vg.length == 0) {
-            state = 'success';
-            description = 'No gems with known vulnerabilities';
+            state = "success";
+            description = "No gems with known vulnerabilities";
         } else {
-            state = 'failure';
+            state = "failure";
             description = `${vg.length} gems with known vulnerabilities`;
         }
 
         return {
             state,
             description,
-            target_url: '',
+            target_url: "",
             context: this.context
         };
     }
@@ -81,7 +81,7 @@ export default class Gemfile {
         if (!this.rubyOutputJson) {
             let advisoryPath = this.retrieveAdvisoryDb();
 
-            Ghcs.shell({ command: 'touch Gemfile' }); // todo: this shouldn't be necessary
+            Ghcs.shell({ command: "touch Gemfile" }); // todo: this shouldn't be necessary
 
             var command = `ruby - ${this.directory}/Gemfile.lock ruby-advisory-db-master/`;
             let rawOutput = Ghcs.shell({ command: command, stdin: rubyCode });
@@ -96,14 +96,14 @@ export default class Gemfile {
     }
 
     retrieveAdvisoryDb() {
-        const url = 'https://github.com/rubysec/ruby-advisory-db/archive/master.tar.gz';
+        const url = "https://github.com/rubysec/ruby-advisory-db/archive/master.tar.gz";
         let command = `curl -sL ${url} | tar xz`;
         Ghcs.shell({ command });
-        return 'ruby-advisory-db-master/';
+        return "ruby-advisory-db-master/";
     }
 }
 
-var Runner = require('runner');
-var args = Runner.cliArguments();
-var runner = new Runner(new Gemfile(args));
+import Runner from "runner";
+let args = Runner.cliArguments();
+let runner = new Runner(new Gemfile(args));
 runner.run();

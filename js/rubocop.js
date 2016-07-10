@@ -1,8 +1,8 @@
-let Ghcs = require('ghcs');
-let _ = require('underscore');
+import Ghcs from "ghcs";
+import _ from "underscore";
 
 export default class Rubocop {
-    constructor({context = 'rubocop', directory = '.', bundler = true, path}) {
+    constructor({context = "rubocop", directory = ".", bundler = true, path}) {
         this.context = context;
         this.directory = directory;
         this.bundler = bundler;
@@ -11,9 +11,9 @@ export default class Rubocop {
 
     run() {
         return {
-          status: this.status(),
-          metadata: this.metadata(),
-          comments: this.comments()
+            status: this.status(),
+            metadata: this.metadata(),
+            comments: this.comments()
         };
     }
 
@@ -23,7 +23,7 @@ export default class Rubocop {
                 let raw = Ghcs.readFile({ path: this.path });
                 this.rubocopOutputJson = JSON.parse(raw);
             } else {
-                let bundlerPrefix = this.bundler ? 'bundle exec ' : '';
+                let bundlerPrefix = this.bundler ? "bundle exec " : "";
                 let cmd = `(cd ${this.directory} && ${bundlerPrefix}rubocop --format json)`;
                 let raw = Ghcs.shell({ command: cmd });
                 this.rubocopOutputJson = JSON.parse(raw);
@@ -41,16 +41,16 @@ export default class Rubocop {
     }
 
     comments() {
-      var files = this.rubocopOutput().files;
-      return _.flatten(_.map(files, (file) => {
-        return _.map(file.offenses, (offense) => {
-          return {
-            path: file.path,
-            line: offense.location.line,
-            body: offense.message
-          };
-        });
-      }));
+        let files = this.rubocopOutput().files;
+        return _.flatten(_.map(files, (file) => {
+            return _.map(file.offenses, (offense) => {
+                return {
+                    path: file.path,
+                    line: offense.location.line,
+                    body: offense.message
+                };
+            });
+        }));
     }
 
     status() {
@@ -59,23 +59,23 @@ export default class Rubocop {
         var state;
 
         if (count == 0) {
-            state = 'success';
-            description = 'Rubocop found no style violations';
+            state = "success";
+            description = "Rubocop found no style violations";
         } else {
-            state = 'failure';
+            state = "failure";
             description = `Rubocop found ${count} violations`;
         }
         
         return {
             state,
             description,
-            target_url: '',
+            target_url: "",
             context: this.context
         };
     }
 }
 
-var Runner = require('runner');
-var args = Runner.cliArguments();
-var runner = new Runner(new Rubocop(args));
+import Runner from "runner";
+let args = Runner.cliArguments();
+let runner = new Runner(new Rubocop(args));
 runner.run();

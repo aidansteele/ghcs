@@ -4,6 +4,6 @@ Duktape.modSearch = function (id, require, exports, module) {
     if (bundled.length > 0) {
         return bundled;
     } else {
-        throw new Error('cannot find module: ' + id);
+        throw new Error("cannot find module: " + id);
     }
 };

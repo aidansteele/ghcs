@@ -1,4 +1,4 @@
-let Ghcs = require('ghcs');
+import Ghcs from "ghcs";
 
 export default class Runner {
     static cliArguments() {

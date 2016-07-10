@@ -1,36 +1,36 @@
 export default class Ghcs {
-    static http({ url, method, body = '', headers = {} }) {
-        var nativeOpts = { url, method, body, headers };
-        return _ghcsHttp(nativeOpts);
+    static http({ url, method, body = "", headers = {} }) {
+        let nativeOpts = { url, method, body, headers };
+        return _ghcsHttp(nativeOpts); // eslint-disable-line no-undef
     }
 
     static readFile({ path }) {
-        var nativeOpts = { path };
-        var ret = _ghcsReadFile(nativeOpts);
+        let nativeOpts = { path };
+        let ret = _ghcsReadFile(nativeOpts); // eslint-disable-line no-undef
         return ret.contents;
     }
 
     static writeFile({ path, data }) {
-        var nativeOpts = { path, data };
-        var ret = _ghcsWriteFile(nativeOpts);
+        let nativeOpts = { path, data };
+        return _ghcsWriteFile(nativeOpts); // eslint-disable-line no-undef
     }
 
-    static shell({ command, stdin = '' }) {
-        var nativeOpts = { command, stdin };
-        return _ghcsShell(nativeOpts).stdout;
+    static shell({ command, stdin = "" }) {
+        let nativeOpts = { command, stdin };
+        return _ghcsShell(nativeOpts).stdout; // eslint-disable-line no-undef
     }
 
     static stdin() {
-        var ret = _ghcsStdin({});
+        let ret = _ghcsStdin({}); // eslint-disable-line no-undef
         return ret.stdin;
     }
 
     static stdout(output) {
-        _ghcsStdout({ stdout: output })
+        _ghcsStdout({ stdout: output }); // eslint-disable-line no-undef
     }
 
     static argv() {
-        return _ghcsArgv({}).argv;
+        return _ghcsArgv({}).argv; // eslint-disable-line no-undef
     }
 }
 

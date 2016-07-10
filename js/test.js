@@ -1,19 +1,19 @@
-var Ghcs = require('ghcs');
-var _ = require('underscore');
+import Ghcs from "ghcs";
+import _ from "underscore";
 
-var opts = {
-    url: 'http://example.com',
-    method: 'GET',
-    body: '',
-    headers: {abc: 'def'}
+let opts = {
+    url: "http://example.com",
+    method: "GET",
+    body: "",
+    headers: {abc: "def"}
 };
 
-var http = Ghcs.http(opts);
+let http = Ghcs.http(opts);
 
-var xHeaders = _.chain(http.headers)
+let xHeaders = _.chain(http.headers)
     .pairs()
-    .filter(([k, v]) => k[0] == 'x' || k[0] == 'X')
+    .filter(([k, v]) => k[0] == "x" || k[0] == "X")
     .object()
     .value();
-var headersJson = JSON.stringify(xHeaders);
+let headersJson = JSON.stringify(xHeaders);
 Ghcs.stdout(headersJson);

@@ -1,8 +1,8 @@
-let Ghcs = require('ghcs');
-let _ = require('underscore');
+import Ghcs from "ghcs";
+import _ from "underscore";
 
 export default class Swiftlint {
-    constructor({context = 'swiftlint', directory = '.', path}) {
+    constructor({context = "swiftlint", directory = ".", path}) {
         this.context = context;
         this.directory = directory;
         this.path = path;
@@ -10,9 +10,9 @@ export default class Swiftlint {
 
     run() {
         return {
-          status: this.status(),
-          metadata: this.metadata(),
-          comments: this.comments()
+            status: this.status(),
+            metadata: this.metadata(),
+            comments: this.comments()
         };
     }
     
@@ -53,23 +53,23 @@ export default class Swiftlint {
         var state;
 
         if (count == 0) {
-            state = 'success';
-            description = 'Swiftlint found no style violations';
+            state = "success";
+            description = "Swiftlint found no style violations";
         } else {
-            state = 'failure';
+            state = "failure";
             description = `Swiftlint found ${count} violations`;
         }
         
         return {
             state,
             description,
-            target_url: '',
+            target_url: "",
             context: this.context
         };
     }
 }
 
-var Runner = require('runner');
-var args = Runner.cliArguments();
-var runner = new Runner(new Swiftlint(args));
+import Runner from "runner";
+let args = Runner.cliArguments();
+let runner = new Runner(new Swiftlint(args));
 runner.run();
