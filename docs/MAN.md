@@ -11,7 +11,7 @@ ghcs - The GitHub Commit Status thing.
 
 **ghcs** set ...
 
-**ghcs** js *script* ...
+**ghcs** execjs *script* ...
 
 # DESCRIPTION
 
@@ -29,7 +29,7 @@ scripts as glue.
 
 ## Getting commit status
 
-```
+```json
 $ ghcs get --ref some_git_ref rubocop_ctx
 {
   "HEAD": {
@@ -51,9 +51,6 @@ $ ghcs get --ref some_git_ref rubocop_ctx
         "url": "https://api.github.com/repos/octocat/Hello-World/statuses/1",
         "context": "rubocop_ctx"
       }
-    },
-    "git": {
-      "sha": "7638417db6d59f3c431d3e1f261cc637155684cd"
     }
   },
   "master": {"...": "..."},
@@ -63,7 +60,7 @@ $ ghcs get --ref some_git_ref rubocop_ctx
 
 ## Setting commit status
 
-```
+```json
 $ cat | ghcs set
 {
   "HEAD": {
@@ -96,7 +93,7 @@ $ cat | ghcs set
 
 ## Executing JavaScript
 
-```
+```js
 $ cat | ghcs execjs path/to/script.js
 var x = {hello: "world"};
 x.key = 123;

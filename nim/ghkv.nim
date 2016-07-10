@@ -6,7 +6,7 @@ import uri
 import github_api
 
 type
-  Ghkv* = ref object of RootObj
+  Ghkv* = ref object
     api: GithubApi
     namespace: string
 

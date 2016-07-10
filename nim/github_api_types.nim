@@ -1,15 +1,35 @@
 import json
 import strutils
 import sequtils
+import tables
+
+type
+  CommitName* = distinct string
+  ContextName* = distinct string
+
+proc `==`*(x, y: CommitName): bool {.borrow.}
+proc `==`*(x, y: ContextName): bool {.borrow.}
+
+type PullRequest* = ref object
+  baseRef*: CommitName
+  headRef*: CommitName
+  pullId*: string
+
+proc toPullRequest*(node: JsonNode): PullRequest =
+  result = PullRequest(
+    baseRef: CommitName(node.fields["base"].fields["sha"].str),
+    headRef: CommitName(node.fields["head"].fields["sha"].str),
+    pullId: $node["number"].num
+  )
 
 type CommitStatusState* {.pure.} = enum
   failure, pending, success
 
-type CommitStatus* = ref object of RootObj
+type CommitStatus* = ref object
   state*: CommitStatusState
   targetUrl*: string
   description*: string
-  context*: string
+  context*: ContextName
   sourceNode: JsonNode
 
 converter toCommitStatus*(node: JsonNode): CommitStatus =
@@ -18,7 +38,7 @@ converter toCommitStatus*(node: JsonNode): CommitStatus =
     state: state,
     targetUrl: getStr(node["target_url"]),
     description: getStr(node["description"]),
-    context: getStr(node["context"]),
+    context: ContextName(getStr(node["context"])),
     sourceNode: copy(node)
   )
 
@@ -27,16 +47,16 @@ converter toJson*(cs: CommitStatus): JsonNode =
   result["state"] = %($cs.state)
   result["target_url"] = %(cs.targetUrl)
   result["description"] = %(cs.description)
-  result["context"] = %(cs.context)
+  result["context"] = %string(cs.context)
 
-type CombinedCommitStatus* = ref object of RootObj
+type CombinedCommitStatus* = ref object
   statuses*: seq[CommitStatus]
 
 converter toCombinedCommitStatus*(node: JsonNode): CombinedCommitStatus =
   let statuses = map(node["statuses"].elems, proc(x: JsonNode): CommitStatus = x)
   result = CombinedCommitStatus(statuses: statuses)
 
-type CommitInfo* = ref object of RootObj
+type CommitInfo* = ref object
   sha*: string
 
 converter toCommitInfo*(node: JsonNode): CommitInfo =

@@ -5,7 +5,7 @@ import uri
 import os
 
 type
-  GithubApi* = ref object of RootObj
+  GithubApi* = ref object
     baseUri*: Uri
     token*: string
 
@@ -28,10 +28,10 @@ proc logItMaybe(httpMethod: string, uri: Uri, body: string, response: Response) 
     writeln(fd, $node)
     close(fd)
 
-proc request*(api: GithubApi, httpMethod: string, url: string, body: JsonNode = nil): JsonNode =
+proc rawRequest*(api: GithubApi, httpMethod: string, url: string, body: JsonNode = nil, headers = ""): string =
   let bodyStr = if isNil(body): "" else: $body
   let lengthHeader = "Content-Length: " & $len(bodyStr) & "\c\L"
-  let extraHeaders = authHeader(api) & lengthHeader
+  let extraHeaders = authHeader(api) & headers & lengthHeader
   let uri = combine(api.baseUri, parseUri(url))
   let prefixedMethod = "http" & httpMethod
   
@@ -40,6 +40,10 @@ proc request*(api: GithubApi, httpMethod: string, url: string, body: JsonNode = 
     proxy = newProxy(getEnv("http_proxy"))
   
   let resp = request($uri, prefixedMethod, extraHeaders = extraHeaders, body = bodyStr, proxy = proxy)
-  result = parseJson(resp.body)
-  
+  result = resp.body
+
   logItMaybe(httpMethod, uri, bodyStr, resp)
+
+proc request*(api: GithubApi, httpMethod: string, url: string, body: JsonNode = nil): JsonNode =
+  result = parseJson(rawRequest(api, httpMethod, url, body))
+  

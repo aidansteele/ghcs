@@ -5,7 +5,7 @@ import json
 import ghcs_native_js
 
 type
-  JsExecutor* = ref object of RootObj
+  JsExecutor* = ref object
     context: DuktapeContext
 
 proc readJavascriptSource*(name: string, babelify: bool): JS =

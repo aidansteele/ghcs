@@ -3,7 +3,7 @@ import json
 import ghkv
 
 type
-  JsonKv* = ref object of RootObj
+  JsonKv* = ref object
     kv*: Ghkv
 
 proc get*(kv: JsonKv, key: string): JsonNode =
