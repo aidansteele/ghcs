@@ -63,6 +63,8 @@ proc rawRequest*(api: GithubApi, httpMethod: string, url: string, body: JsonNode
   let res = easy_perform(handle)
   if res != E_OK:
     echo("curl failed: " & $easy_strerror(res))
+
+  slist_free_all(slist)
   
   setPosition(stream, 0)
   result = readAll(stream)
