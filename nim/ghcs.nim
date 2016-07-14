@@ -15,14 +15,13 @@ import github_api_types
 type GhcsInputOptions* = object
   refName: CommitName
   context: ContextName
-  baseBranch: string
   remoteUrl: string
   apiToken: string
 
 proc ghcsGet(opts: GhcsInputOptions): JsonNode =
   let extracted = extractBaseAndRepo(opts.remoteUrl)
   let api = GithubApi(baseUri: extracted.base, token: opts.apiToken)
-  let repo = newGhcsRepo(api, extracted.repo, opts.baseBranch)
+  let repo = newGhcsRepo(api, extracted.repo)
 
   if len(string(opts.context)) == 0:
     discard # tell user they are bad
@@ -43,7 +42,6 @@ proc initGhcsInputOptions(cliParams: openarray[string]): GhcsInputOptions =
   var opts: GhcsInputOptions
   opts.refName = CommitName(getter("ref", "GHCS_REF", ""))
   opts.context = ContextName(getter("context", "GHCS_CONTEXT", ""))
-  opts.baseBranch = getter("base-branch", "GHCS_BASE_BRANCH", "master")
   opts.remoteUrl = getter("remote-url", "GHCS_REMOTE_URL", "")
   opts.apiToken = getter("api-token", "GHCS_API_TOKEN", "")
     
@@ -59,7 +57,7 @@ proc initGhcsInputOptions(cliParams: openarray[string]): GhcsInputOptions =
 proc ghcsSet(opts: GhcsInputOptions, input: JsonNode) =
   let extracted = extractBaseAndRepo(opts.remoteUrl)
   let api = GithubApi(baseUri: extracted.base, token: opts.apiToken)
-  let repo = newGhcsRepo(api, extracted.repo, opts.baseBranch)
+  let repo = newGhcsRepo(api, extracted.repo)
 
   for context, data in input.fields["HEAD"].fields: # TODO fixme
     let cliRef = toGhcsCliRef(data)

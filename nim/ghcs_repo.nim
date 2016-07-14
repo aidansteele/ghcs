@@ -28,7 +28,6 @@ type
     api: GithubApi
     kv: JsonKv
     repoName: string
-    baseBranch: string
 
 converter toJson*(cr: GhcsCliRef): JsonNode =
   result = newJObject()
@@ -51,10 +50,10 @@ converter toJson*(cliOutput: GhcsCliOutput): JsonNode =
   for name, val in cliOutput:
     add(result, string(name), val)
 
-proc newGhcsRepo*(api: GithubApi, repo: string, baseBranch: string): GhcsRepo =
+proc newGhcsRepo*(api: GithubApi, repo: string): GhcsRepo =
   let rawKv = newGhkv(api, repo)
   let jsonKv = JsonKv(kv: rawKv)
-  result = GhcsRepo(api: api, kv: jsonKv, repoName: repo, baseBranch: baseBranch)
+  result = GhcsRepo(api: api, kv: jsonKv, repoName: repo)
 
 proc resolveCommitName(repo: GhcsRepo, commitName: CommitName): CommitName =
   let url = "repos/" & repo.repoName & "/commits/" & string(commitName)
