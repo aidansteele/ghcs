@@ -106,6 +106,8 @@ Ghcs.stdout(out);
 
 To minimise external dependencies, the JavaScript engine is _not_ Node.js.
 Therefore the Node.js stdlib is unavailable. For an exhaustive list of
-functionality available inside Ghcs scripts, see [here]().
+functionality available inside Ghcs scripts, see [here][ghcs-api].
+
+[ghcs-api]: https://github.com/aidansteele/ghcs/blob/master/docs/JS_API.md
 
 # SEE ALSO

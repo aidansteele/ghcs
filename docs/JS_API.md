@@ -4,6 +4,8 @@ To minimise external dependencies, the JavaScript engine is _not_ Node.js. The
 JavaScript VM is provided by the [Duktape][duktape] library. Therefore some of 
 the niceties that you've come to love and expect may be missing.
 
+[duktape]: http://duktape.org/
+
 This document should serve as a complete reference of the built-in functionality 
 available to you. If there is any missing crucial functionality, please open 
 an issue.
