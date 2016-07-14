@@ -1,9 +1,8 @@
 import diff
 import sequtils
 import json
-import math
-import myutils
 
+# TODO: review this at some point https://github.com/houndci/hound/commit/abeca34b5fe1c27958389cdb6bcea244fdc5464f
 type LineComment* = tuple[path: string, lineNumber: int, comment: string]
 type PatchComment* = tuple[path: string, position: int, comment: string]
 

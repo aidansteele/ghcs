@@ -11,7 +11,7 @@ TO DO before 1.0 in no particular order:
 - [ ] Validate works correctly where parent or master is a merge commit
 - [ ] Check out the env vars / gitenv in various CIs (buildkite, bamboo, travis)
 - [ ] Support [Bitbucket][bitbucket-api]? [GitLab][gitlab-api]?
-- [ ] Ability to leave line-specific comments (see houndci.com) (also see [this][no-double-up] for avoiding double ups)
+- [x] Ability to leave line-specific comments (see houndci.com) (also see [this][no-double-up] for avoiding double ups)
 - [x] CI to upload artifacts to S3
 - [ ] CI to create signed deb/rpm packages, push to own apt repo
 - [x] vendor nim
