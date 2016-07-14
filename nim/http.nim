@@ -43,9 +43,8 @@ proc parseHeaderLine(line: string): Option[tuple[name: string, value: string]] =
 
 proc curlHeaderCb(data: cstring, size: int, nmemb: int, context: HttpHeaders): int {.exportc.} =
   let actualSize = size * nmemb
-  var headerLine = newStringOfCap(actualSize)
-  for i in 0..actualSize-1: # TODO: there's gotta be a better way
-    add(headerLine, data[i])
+  var headerLine = newString(actualSize)
+  copyMem(addr(headerLine[0]), data, actualSize)
   let header = parseHeaderLine(headerLine)
   if isSome(header):
     let name = get(header).name
