@@ -6,7 +6,7 @@ import osproc
 import js_executor
 import patch
 import json
-import options
+import options_table
 import strtabs
 import streams
 import tables
