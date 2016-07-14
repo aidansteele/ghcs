@@ -11,6 +11,7 @@ import github_api_types
 import line_comment
 import patch
 import streams
+import httpcore
 
 type
   GhcsCliRef* = ref object
@@ -83,7 +84,8 @@ proc postCommitComment(repo: GhcsRepo, commitName: CommitName, comment: LineComm
 
 proc changedLinesInPR(repo: GhcsRepo, pullId: string): seq[ChangedLine] =
   let diffUrl = "repos/" & repo.repoName & "/pulls/" & pullId & ".diff"
-  let diff = rawRequest(repo.api, "GET", diffUrl, nil, "Accept: application/vnd.github.v3.diff\c\L")
+  let headers = newHttpHeaders({"Accept": "application/vnd.github.v3.diff"})
+  let diff = rawRequest(repo.api, "GET", diffUrl, nil, headers)
   result = changedLinesInPatch(newStringStream(diff))
 
 proc commentsInPR(repo: GhcsRepo, pullId: string): seq[PatchComment] =
