@@ -7,7 +7,7 @@ import options
   
 type HttpResponse* = object
   body*: string
-  status*: int # TODO
+  status*: int
   headers*: HttpHeaders
 
 # proc logItMaybe(httpMethod: string, uri: Uri, body: string, response: Response) =
@@ -91,8 +91,11 @@ proc rawRequest*(uri: Uri, httpMethod: string, body = "", headers: HttpHeaders =
     echo("curl failed: " & $easy_strerror(res))
 
   slist_free_all(slist)
+
+  var statusCode: int = 0
+  discard easy_getinfo(handle, INFO_RESPONSE_CODE, addr statusCode)
   
   setPosition(stream, 0)
   let respBody = readAll(stream)
-  result = HttpResponse(body: respBody, headers: responseHeaders)
+  result = HttpResponse(body: respBody, status: statusCode, headers: responseHeaders)
   # logItMaybe(httpMethod, uri, bodyStr, resp)    
