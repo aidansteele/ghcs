@@ -13,8 +13,8 @@ import strutils
 import github_api_types
 
 type GhcsInputOptions* = object
-  refName: string
-  context: string
+  refName: CommitName
+  context: ContextName
   baseBranch: string
   remoteUrl: string
   apiToken: string
@@ -24,10 +24,10 @@ proc ghcsGet(opts: GhcsInputOptions) =
   let api = GithubApi(baseUri: extracted.base, token: opts.apiToken)
   let repo = newGhcsRepo(api, extracted.repo, opts.baseBranch)
 
-  if len(opts.context) == 0:
+  if len(string(opts.context)) == 0:
     discard # tell user they are bad
   
-  let outp = ghcsOutput(repo, CommitName(opts.refName), ContextName(opts.context))
+  let outp = ghcsOutput(repo, opts.refName, opts.context)
   echo(pretty(outp))
 
 proc initGhcsInputOptions(cliParams: openarray[string]): GhcsInputOptions =
@@ -42,8 +42,8 @@ proc initGhcsInputOptions(cliParams: openarray[string]): GhcsInputOptions =
       return default
   
   var opts: GhcsInputOptions
-  opts.refName = getter("ref", "GHCS_REF", "")
-  opts.context = getter("context", "GHCS_CONTEXT", "")
+  opts.refName = CommitName(getter("ref", "GHCS_REF", ""))
+  opts.context = ContextName(getter("context", "GHCS_CONTEXT", ""))
   opts.baseBranch = getter("base-branch", "GHCS_BASE_BRANCH", "master")
   opts.remoteUrl = getter("remote-url", "GHCS_REMOTE_URL", "")
   opts.apiToken = getter("api-token", "GHCS_API_TOKEN", "")
@@ -52,8 +52,8 @@ proc initGhcsInputOptions(cliParams: openarray[string]): GhcsInputOptions =
     discard # tell user they are bad
   if len(opts.remoteUrl) == 0:
     opts.remoteUrl = execCmdEx("git config --get remote.origin.url").output.strip()
-  if len(opts.refName) == 0:
-    opts.refName = execCmdEx("git rev-parse HEAD").output.strip()
+  if len(string(opts.refName)) == 0:
+    opts.refName = CommitName(execCmdEx("git rev-parse HEAD").output.strip())
 
   return opts
   
@@ -65,7 +65,7 @@ proc ghcsSet(opts: GhcsInputOptions, input: Stream) =
   let json = parseJson(input, "stdin")
   for context, data in json.fields["HEAD"].fields: # TODO fixme
     let cliRef = toGhcsCliRef(data)
-    ghcsInput(repo, CommitName(opts.refName), ContextName(context), cliRef)
+    ghcsInput(repo, opts.refName, ContextName(context), cliRef)
 
 proc ghcsExecJs(script: string, babelify: bool) =
   let jsExe = newJsExecutor()
