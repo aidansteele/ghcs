@@ -24,7 +24,7 @@ type
 #     close(fd)
 
 discard global_init(GLOBAL_ALL)
-let handle = easy_init()
+var handle {.threadvar.}: PCurl
 
 proc curlWriteCb(data: cstring, size: int, nmemb: int, context: Stream): int {.exportc.} =
   let actualSize = size * nmemb
@@ -47,7 +47,11 @@ proc rawRequest*(api: GithubApi, httpMethod: string, url: string, body: JsonNode
 
   let stream = newStringStream()
 
-  easy_reset(handle)
+  if isNil(handle):
+    handle = easy_init()
+  else:
+    easy_reset(handle)
+    
   discard easy_setopt(handle, OPT_URL, $uri)
   discard easy_setopt(handle, OPT_WRITEFUNCTION, curlWriteCb)
   discard easy_setopt(handle, OPT_WRITEDATA, stream)
