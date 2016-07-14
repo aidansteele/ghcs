@@ -56,7 +56,7 @@ type
   PMcode* = ptr Mcode
   PMoption* = ptr Moption
   PMSG* = ptr MSG
-  Poption* = ptr Option
+  Poption* = ptr COption
   PSH* = ptr SH
   PSHcode* = ptr SHcode
   PSHoption* = ptr SHoption
@@ -139,7 +139,7 @@ type
   Ftpmethod* = enum
     FTPMETHOD_DEFAULT, FTPMETHOD_MULTICWD, FTPMETHOD_NOCWD, FTPMETHOD_SINGLECWD,
     FTPMETHOD_LAST
-  Option* = enum
+  COption* = enum
     OPT_PORT = 0 + 3, OPT_TIMEOUT = 0 + 13, OPT_INFILESIZE = 0 + 14,
     OPT_LOW_SPEED_LIMIT = 0 + 19, OPT_LOW_SPEED_TIME = 0 + 20,
     OPT_RESUME_FROM = 0 + 21, OPT_CRLF = 0 + 27, OPT_SSLVERSION = 0 + 32,
@@ -322,7 +322,7 @@ type
     Tinfotype: Infotype, Tdebug_callback: Debug_callback, Tcode: Code,
     Tconv_callback: Conv_callback, Tssl_ctx_callback: Ssl_ctx_callback,
     Tproxytype: Proxytype, Tftpssl: Ftpssl, Tftpauth: Ftpauth, Tftpmethod: Ftpmethod,
-    Toption: Option, THTTP_VERSION: HTTP_VERSION, TNETRC_OPTION: NETRC_OPTION,
+    Toption: COption, THTTP_VERSION: HTTP_VERSION, TNETRC_OPTION: NETRC_OPTION,
     TSSL_VERSION: SSL_VERSION, TTIMECOND: TIMECOND, Tformoption: Formoption,
     Tforms: Forms, TFORMcode: FORMcode, Tformget_callback: Formget_callback,
     Tslist: Slist, TINFO: INFO, Tclosepolicy: Closepolicy, Tlock_data: Lock_data,
@@ -467,7 +467,7 @@ proc easy_strerror*(para1: Code): cstring{.cdecl, dynlib: libname,
 proc share_strerror*(para1: SHcode): cstring{.cdecl, dynlib: libname,
     importc: "curl_share_strerror".}
 proc easy_init*(): PCurl{.cdecl, dynlib: libname, importc: "curl_easy_init".}
-proc easy_setopt*(curl: PCurl, option: Option): Code{.cdecl, varargs, dynlib: libname,
+proc easy_setopt*(curl: PCurl, option: COption): Code{.cdecl, varargs, dynlib: libname,
     importc: "curl_easy_setopt".}
 proc easy_perform*(curl: PCurl): Code{.cdecl, dynlib: libname,
                                 importc: "curl_easy_perform".}
