@@ -6,6 +6,8 @@ import strtabs
 import streams
 import sequtils
 import os
+import http
+import uri
 
 proc ghcsReadFile*(json: JsonNode): JsonNode {.procvar.} =
   let path = json["path"].str
@@ -53,20 +55,15 @@ proc ghcsHttp*(json: JsonNode): JsonNode {.procvar.} =
   let url = json["url"].str
   let requestBody = json["body"].str
   let httpMethod = json["method"].str
-  let requestHeaders = json["headers"]
 
-  var headerString = "Content-Length: $1\c\L" % [$len(requestBody)]
-  for key, val in requestHeaders:
-    # TODO: unescape json string $val
-    headerString = headerString & "$1: $2\c\L" % [key, $val]
+  let uri = parseUri(url)
+  let requestHeaders = newHttpHeaders()
 
-  let prefixedMethod = "http" & httpMethod
-  let resp = request(url, prefixedMethod, extraHeaders = headerString, body = requestBody)
-  let responseHeaders = resp.headers
+  for key, val in json["headers"]:
+    add(requestHeaders, key, val.str)
 
-  let respHeaderNodes = newJObject()
+  let resp = rawRequest(uri, httpMethod, requestBody, requestHeaders)
+
+  result = %*{ "body": resp.body, "statusCode": resp.status, "headers": newJObject() }
   for key, val in resp.headers:
-    respHeaderNodes[key] = newJString(val)
-
-  result = %*{ "body": resp.body, "statusCode": resp.status }
-  result["headers"] = respHeaderNodes
+    add(result["headers"], key, %val)
