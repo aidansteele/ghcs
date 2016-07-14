@@ -10,7 +10,7 @@ let filenameLine = re"^\+\+\+ b/(.+)"
 
 type ChangedLine* = tuple[path: string, lineNumber: int, position: int]
 
-proc changedLinesInPatch*(f: Stream): seq[ChangedLine] =
+proc changedLinesInDiff*(f: Stream): seq[ChangedLine] =
   var lineNumber = 0
   var position = 0
   var path = ""
@@ -42,9 +42,19 @@ proc changedLinesInPatch*(f: Stream): seq[ChangedLine] =
 when defined(testing):
   import unittest
 
-  suite "patch-file parsing tests":
-    test "patch-file modified line numbers":
-      let patch = newFileStream("tests/fixtures/diff.diff")
-      let lineNumbers = changedLinesInPatch(patch)
-      let expected: seq[ChangedLine] = @[("", 14, 5), ("", 22, 13), ("", 54, 37)]
+  suite "diff-file parsing tests":
+    test "diff-file modified line numbers":
+      let diff = newFileStream("tests/fixtures/diff.diff")
+      let lineNumbers = changedLinesInDiff(diff)
+      let expected: seq[ChangedLine] = @[
+        ("fastlane/lib/assets/s3_html_template.erb", 53, 5),
+        ("fastlane/lib/fastlane/actions/s3.rb", 13, 4),
+        ("fastlane/lib/fastlane/actions/s3.rb", 144, 12),
+        ("fastlane/lib/fastlane/actions/s3.rb", 145, 13),
+        ("fastlane/lib/fastlane/actions/s3.rb", 146, 14),
+        ("fastlane/spec/actions_specs/s3_spec.rb", 52, 4),
+        ("fastlane/spec/actions_specs/s3_spec.rb", 53, 5),
+        ("fastlane/spec/actions_specs/s3_spec.rb", 54, 6),
+        ("fastlane/spec/actions_specs/s3_spec.rb", 56, 12)
+      ]
       check(lineNumbers == expected)

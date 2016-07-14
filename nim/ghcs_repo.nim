@@ -9,7 +9,7 @@ import tables
 import sequtils
 import github_api_types
 import line_comment
-import patch
+import diff
 import streams
 import httpcore
 import http
@@ -89,7 +89,7 @@ proc changedLinesInPR(repo: GhcsRepo, pullId: string): seq[ChangedLine] =
   let headers = newHttpHeaders({"Accept": "application/vnd.github.v3.diff"})
   let uri = combine(repo.api.baseUri, parseUri(diffUrl))
   let diff = rawRequest(uri, "GET", nil, headers).body
-  result = changedLinesInPatch(newStringStream(diff))
+  result = changedLinesInDiff(newStringStream(diff))
 
 proc commentsInPR(repo: GhcsRepo, pullId: string): seq[PatchComment] =
   let url = "repos/" & repo.repoName & "/pulls/" & pullId & "/comments"
@@ -98,7 +98,7 @@ proc commentsInPR(repo: GhcsRepo, pullId: string): seq[PatchComment] =
 
 proc postPullRequestComments(repo: GhcsRepo, commitName: CommitName, pullId: string, comments: seq[LineComment]) =
   let changed = changedLinesInPR(repo, pullId)
-  let applicable = patchComments(comments, changed)
+  let applicable = diffComments(comments, changed)
   let existing = commentsInPR(repo, pullId)
 
   for pc in applicable:

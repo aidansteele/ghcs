@@ -1,4 +1,4 @@
-import patch
+import diff
 import sequtils
 import json
 import math
@@ -7,7 +7,7 @@ import myutils
 type LineComment* = tuple[path: string, lineNumber: int, comment: string]
 type PatchComment* = tuple[path: string, position: int, comment: string]
 
-proc patchComments*(comments: seq[LineComment], changedLines: seq[ChangedLine]): seq[PatchComment] =
+proc diffComments*(comments: seq[LineComment], changedLines: seq[ChangedLine]): seq[PatchComment] =
   result = @[]
   
   for lc in comments:
@@ -33,12 +33,20 @@ converter toJson*(pc: PatchComment): JsonNode =
 
 when defined(testing):
   import unittest
+  import streams
 
   suite "line comment tests":
     test "select only applicable line comments":
-      let patch = open("tests/fixtures/patch.patch")
-      let changedLines = changedLinesInPatch(patch)
-      let lineComments: seq[LineComment] = @[("", 14, "hello world"), ("", 17, "sup"), ("", 54, "2nd hello world")]
-      let expected: seq[LineComment] = @[("", 14, "hello world"), ("", 54, "2nd hello world")]
-      let applicable = applicableLineComments(lineComments, changedLines)
+      let diff = newFileStream("tests/fixtures/diff.diff")
+      let changedLines = changedLinesInDiff(diff)
+      let lineComments: seq[LineComment] = @[
+        ("fastlane/lib/fastlane/actions/s3.rb", 13, "hello world"), 
+        ("some/unchanged/file/in/pr", 17, "sup"), 
+        ("fastlane/spec/actions_specs/s3_spec.rb", 54, "another message"),
+      ]
+      let expected: seq[PatchComment] = @[
+        ("fastlane/lib/fastlane/actions/s3.rb", 4, "hello world"), 
+        ("fastlane/spec/actions_specs/s3_spec.rb", 6, "another message"),
+      ]
+      let applicable = diffComments(lineComments, changedLines)
       check(applicable == expected)

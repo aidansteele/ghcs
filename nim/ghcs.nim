@@ -4,7 +4,6 @@ import git_config
 import os
 import osproc
 import js_executor
-import patch
 import json
 import options_table
 import strtabs

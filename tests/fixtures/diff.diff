@@ -1,0 +1,58 @@
+diff --git a/fastlane/lib/assets/s3_html_template.erb b/fastlane/lib/assets/s3_html_template.erb
+index a853c56..7b5066d 100644
+--- a/fastlane/lib/assets/s3_html_template.erb
++++ b/fastlane/lib/assets/s3_html_template.erb
+@@ -50,7 +50,7 @@
+     </style>
+ 
+     <h1 style="text-align: center;"><%= title %></h1>
+-    <!-- <img src="app_icon.png" id="appIcon"> -->
++    <img src="<%= app_icon %>" id="appIcon">
+ 
+     <div class="oneRow">
+       <span class="download" id="ios">
+diff --git a/fastlane/lib/fastlane/actions/s3.rb b/fastlane/lib/fastlane/actions/s3.rb
+index 7e4ec73..94a0ead 100644
+--- a/fastlane/lib/fastlane/actions/s3.rb
++++ b/fastlane/lib/fastlane/actions/s3.rb
+@@ -10,6 +10,7 @@ module SharedValues
+       S3_PLIST_OUTPUT_PATH = :S3_PLIST_OUTPUT_PATH
+       S3_HTML_OUTPUT_PATH = :S3_HTML_OUTPUT_PATH
+       S3_VERSION_OUTPUT_PATH = :S3_VERSION_OUTPUT_PATH
++      S3_ICON_OUTPUT_PATH = :S3_ICON_OUTPUT_PATH
+     end
+ 
+     S3_ARGS_MAP = {
+@@ -140,6 +141,9 @@ def self.run(config)
+           title: title
+         })
+ 
++        # Gets icon from ipa and uploads it
++        icon_url = self.upload_icon(ipa_file, info, url_part, bucket, acl)
++
+         # Creates html from template
+         if html_template_path && File.exist?(html_template_path)
+           html_template = eth.load_from_path(html_template_path)
+diff --git a/fastlane/spec/actions_specs/s3_spec.rb b/fastlane/spec/actions_specs/s3_spec.rb
+index 8ac845e..8960498 100644
+--- a/fastlane/spec/actions_specs/s3_spec.rb
++++ b/fastlane/spec/actions_specs/s3_spec.rb
+@@ -49,18 +49,41 @@
+           end").runner.execute(:test)
+         end.to raise_error("No IPA file path given, pass using `ipa: 'ipa path'`")
+       end
++    end
++  end
++end
+ 
+-      it "raise an error if no IPA was given" do
+-        expect do
+-          Fastlane::FastFile.new.parse("lane :test do
+-            s3({
++    end
+   end
+ end
+diff --git a/fastlane/spec/fixtures/ipas/iOSAppOnly.ipa b/fastlane/spec/fixtures/ipas/iOSAppOnly.ipa
+new file mode 100644
+index 0000000..541e585
+Binary files /dev/null and b/fastlane/spec/fixtures/ipas/iOSAppOnly.ipa differ
