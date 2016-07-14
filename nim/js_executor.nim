@@ -28,6 +28,7 @@ proc readThunkJson(json: JsonNode): JsonNode =
   result = %*{ "src": string(src) }
 
 proc execSourceFile*(jsExe: JSExecutor, name: string, babelify = false) =
+  # TODO: actually implement babelification
   discard evalJavascript(jsExe.context, JS"""
     function runIt(opts) {
       require(opts.name);

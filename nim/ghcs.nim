@@ -68,9 +68,9 @@ proc ghcsSet(opts: GhcsInputOptions, input: Stream) =
     let cliRef = toGhcsCliRef(data)
     ghcsInput(repo, CommitName(opts.refName), ContextName(context), cliRef)
 
-proc ghcsExecJs(script: string) =
+proc ghcsExecJs(script: string, babelify: bool) =
   let jsExe = newJsExecutor()
-  execSourceFile(jsExe, script)
+  execSourceFile(jsExe, script, babelify)
   destroyJsExecutor(jsExe)
 
 proc doIt() =
@@ -88,8 +88,10 @@ proc doIt() =
     let opts = initGhcsInputOptions(params[1..high(params)])  
     ghcsSet(opts, newFileStream(stdin))
   of "execjs":
-    let script = params[1]
-    ghcsExecJs(script)
+    let cmdParams = optionsTable(params[1..high(params)])
+    let script = cmdParams["script"]
+    let babelify = hasKey(cmdParams, "babelify") # TODO really shouldn't need a val  
+    ghcsExecJs(script, babelify)
   else:
     echo("Only recognised commands are get, set, execjs")
 
