@@ -19,7 +19,7 @@ type GhcsInputOptions* = object
   remoteUrl: string
   apiToken: string
 
-proc ghcsGet(opts: GhcsInputOptions) =
+proc ghcsGet(opts: GhcsInputOptions): JsonNode =
   let extracted = extractBaseAndRepo(opts.remoteUrl)
   let api = GithubApi(baseUri: extracted.base, token: opts.apiToken)
   let repo = newGhcsRepo(api, extracted.repo, opts.baseBranch)
@@ -27,8 +27,7 @@ proc ghcsGet(opts: GhcsInputOptions) =
   if len(string(opts.context)) == 0:
     discard # tell user they are bad
   
-  let outp = ghcsOutput(repo, opts.refName, opts.context)
-  echo(pretty(outp))
+  result = ghcsOutput(repo, opts.refName, opts.context)
 
 proc initGhcsInputOptions(cliParams: openarray[string]): GhcsInputOptions =
   let cmdParams = optionsTable(cliParams)
@@ -57,18 +56,57 @@ proc initGhcsInputOptions(cliParams: openarray[string]): GhcsInputOptions =
 
   return opts
   
-proc ghcsSet(opts: GhcsInputOptions, input: Stream) =
+proc ghcsSet(opts: GhcsInputOptions, input: JsonNode) =
   let extracted = extractBaseAndRepo(opts.remoteUrl)
   let api = GithubApi(baseUri: extracted.base, token: opts.apiToken)
   let repo = newGhcsRepo(api, extracted.repo, opts.baseBranch)
 
-  let json = parseJson(input, "stdin")
-  for context, data in json.fields["HEAD"].fields: # TODO fixme
+  for context, data in input.fields["HEAD"].fields: # TODO fixme
     let cliRef = toGhcsCliRef(data)
     ghcsInput(repo, opts.refName, ContextName(context), cliRef)
 
-proc ghcsExecJs(script: string, babelify: bool) =
+proc newGhcsStdin(source: Stream): auto =
+  result = proc(json: JsonNode): JsonNode =
+    result = %*{"stdin": readAll(source)}
+
+proc newGhcsStdout(sink: Stream): auto =
+  result = proc(json: JsonNode): JsonNode =
+    let str = json["stdout"].str
+    write(sink, str)
+    result = %*{"noop": true}
+
+proc cmd_setjs(params: seq[string]) =
+  let opts = initGhcsInputOptions(params[1..high(params)])
+
+  # do the GET we'll pipe through to the js script
+  let getOutput = ghcsGet(opts)
+  
+  # js sandbox env creation
+  let inp = newStringStream($getOutput)
+  let ghcsStdin = newGhcsStdin(inp)
+  let outp = newStringStream()
+  let ghcsStdout = newGhcsStdout(outp)
+  let cbs = JsCallbackTable(ghcsStdin: ghcsStdin, ghcsStdout: ghcsStdout)
+
+  # now run the script in its sandbox
+  let jsExe = newJsExecutor(cbs)
+  let cmdParams = optionsTable(params[1..high(params)])    
+  let script = cmdParams["script"]   
+  let babelify = hasKey(cmdParams, "babelify") # TODO really shouldn't need a val       
+  execSourceFile(jsExe, script, babelify)
+  destroyJsExecutor(jsExe)
+
+  # now pipe that output back into the SET!
+  setPosition(outp, 0)
+  let scriptOutputJson = parseJson(readAll(outp))
+  ghcsSet(opts, scriptOutputJson)
+
+proc cmd_execjs(params: seq[string]) =
+  # TODO: remove duplication of cmd_setjs
+  let cmdParams = optionsTable(params[1..high(params)])
   let jsExe = newJsExecutor()
+  let script = cmdParams["script"]   
+  let babelify = hasKey(cmdParams, "babelify")      
   execSourceFile(jsExe, script, babelify)
   destroyJsExecutor(jsExe)
 
@@ -82,15 +120,14 @@ proc doIt() =
   case cmd
   of "get":
     let opts = initGhcsInputOptions(params[1..high(params)])
-    ghcsGet(opts)
+    echo(ghcsGet(opts))    
   of "set":
     let opts = initGhcsInputOptions(params[1..high(params)])  
-    ghcsSet(opts, newFileStream(stdin))
+    ghcsSet(opts, parseJson(readAll(stdin)))
+  of "setjs":
+    cmd_setjs(params)
   of "execjs":
-    let cmdParams = optionsTable(params[1..high(params)])
-    let script = cmdParams["script"]
-    let babelify = hasKey(cmdParams, "babelify") # TODO really shouldn't need a val  
-    ghcsExecJs(script, babelify)
+    cmd_execjs(params)
   else:
     echo("Only recognised commands are get, set, execjs")
 
