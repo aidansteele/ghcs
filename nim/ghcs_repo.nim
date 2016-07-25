@@ -87,6 +87,8 @@ proc changedLinesInPR(repo: GhcsRepo, pullId: string): seq[ChangedLine] =
   let diffUrl = "repos/" & repo.repoName & "/pulls/" & pullId & ".diff"
   let headers = newHttpHeaders({"Accept": "application/vnd.github.v3.diff"})
   let uri = combine(repo.api.baseUri, parseUri(diffUrl))
+  addAuthHeader(repo.api, headers)
+
   let diff = rawRequest(uri, "GET", nil, headers).body
   result = changedLinesInDiff(newStringStream(diff))
 
