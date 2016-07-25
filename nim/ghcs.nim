@@ -18,43 +18,38 @@ type GhcsInputOptions* = object
   remoteUrl: string
   apiToken: string
 
-proc ghcsGet(opts: GhcsInputOptions): JsonNode =
+proc cmd_get(opts: GhcsInputOptions): JsonNode =
   let extracted = extractBaseAndRepo(opts.remoteUrl)
   let api = GithubApi(baseUri: extracted.base, token: opts.apiToken)
   let repo = newGhcsRepo(api, extracted.repo)
 
   if len(string(opts.context)) == 0:
     discard # tell user they are bad
+  if len(opts.apiToken) == 0:
+    discard # tell user they are bad
   
   result = ghcsOutput(repo, opts.refName, opts.context)
 
-proc initGhcsInputOptions(cliParams: openarray[string]): GhcsInputOptions =
-  let cmdParams = optionsTable(cliParams)
-
-  let getter = proc(cli: string, env: string, default: string): string =
+proc initGhcsInputOptions(cmdParams: StringTableRef): GhcsInputOptions =
+  template getter(cli: string, env: string, default: untyped): string =
     if hasKey(cmdParams, cli):
-      return cmdParams[cli]
+      cmdParams[cli]
     elif existsEnv(env):
-      return getEnv(env)
+      getEnv(env)
     else:
-      return default
+      default
+
+  let exec = proc(cmd: string): string =
+    execCmdEx(cmd).output.strip()
   
   var opts: GhcsInputOptions
-  opts.refName = CommitName(getter("ref", "GHCS_REF", ""))
+  opts.refName = CommitName(getter("ref", "GHCS_REF", exec("git rev-parse HEAD")))
   opts.context = ContextName(getter("context", "GHCS_CONTEXT", ""))
-  opts.remoteUrl = getter("remote-url", "GHCS_REMOTE_URL", "")
+  opts.remoteUrl = getter("remote-url", "GHCS_REMOTE_URL", exec("git config --get remote.origin.url"))
   opts.apiToken = getter("api-token", "GHCS_API_TOKEN", "")
-    
-  if len(opts.apiToken) == 0:
-    discard # tell user they are bad
-  if len(opts.remoteUrl) == 0:
-    opts.remoteUrl = execCmdEx("git config --get remote.origin.url").output.strip()
-  if len(string(opts.refName)) == 0:
-    opts.refName = CommitName(execCmdEx("git rev-parse HEAD").output.strip())
-
-  return opts
+  result = opts
   
-proc ghcsSet(opts: GhcsInputOptions, input: JsonNode) =
+proc cmd_set(opts: GhcsInputOptions, input: JsonNode) =
   let extracted = extractBaseAndRepo(opts.remoteUrl)
   let api = GithubApi(baseUri: extracted.base, token: opts.apiToken)
   let repo = newGhcsRepo(api, extracted.repo)
@@ -73,11 +68,11 @@ proc newGhcsStdout(sink: Stream): auto =
     write(sink, str)
     result = %*{"noop": true}
 
-proc cmd_setjs(params: seq[string]) =
-  let opts = initGhcsInputOptions(params[1..high(params)])
+proc cmd_setjs(cmdParams: StringTableRef) =
+  let opts = initGhcsInputOptions(cmdParams)
 
   # do the GET we'll pipe through to the js script
-  let getOutput = ghcsGet(opts)
+  let getOutput = cmd_get(opts)
   
   # js sandbox env creation
   let inp = newStringStream($getOutput)
@@ -88,7 +83,6 @@ proc cmd_setjs(params: seq[string]) =
 
   # now run the script in its sandbox
   let jsExe = newJsExecutor(cbs)
-  let cmdParams = optionsTable(params[1..high(params)])    
   let script = cmdParams["script"]   
   let babelify = hasKey(cmdParams, "babelify") # TODO really shouldn't need a val       
   execSourceFile(jsExe, script, babelify)
@@ -97,11 +91,10 @@ proc cmd_setjs(params: seq[string]) =
   # now pipe that output back into the SET!
   setPosition(outp, 0)
   let scriptOutputJson = parseJson(readAll(outp))
-  ghcsSet(opts, scriptOutputJson)
+  cmd_set(opts, scriptOutputJson)
 
-proc cmd_execjs(params: seq[string]) =
+proc cmd_execjs(cmdParams: StringTableRef) =
   # TODO: remove duplication of cmd_setjs
-  let cmdParams = optionsTable(params[1..high(params)])
   let jsExe = newJsExecutor()
   let script = cmdParams["script"]   
   let babelify = hasKey(cmdParams, "babelify")      
@@ -114,18 +107,19 @@ proc doIt() =
     echo("Need at least one command")
     return
   
-  let cmd = params[0]  
+  let cmd = params[0]
+  let cmdParams = optionsTable(params[1..high(params)])
+  let opts = initGhcsInputOptions(cmdParams)
+  
   case cmd
   of "get":
-    let opts = initGhcsInputOptions(params[1..high(params)])
-    echo(ghcsGet(opts))    
+    echo(cmd_get(opts))    
   of "set":
-    let opts = initGhcsInputOptions(params[1..high(params)])  
-    ghcsSet(opts, parseJson(readAll(stdin)))
+    cmd_set(opts, parseJson(readAll(stdin)))
   of "setjs":
-    cmd_setjs(params)
+    cmd_setjs(cmdParams)
   of "execjs":
-    cmd_execjs(params)
+    cmd_execjs(cmdParams)
   else:
     echo("Only recognised commands are get, set, execjs")
 
