@@ -1,10 +1,7 @@
 import json
 import strutils
 import duktape_ffi
-
-# TODO: is there a better way to re-export this?
-# i don't want to import duktape_ffi everywhere
-type DuktapeContext* = duktape_ffi.DuktapeContext
+export DuktapeContext
 
 type JS* = distinct string
 
