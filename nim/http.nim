@@ -4,25 +4,27 @@ import streams
 import httpcore
 import nre
 import options
+import json
+import os
   
 type HttpResponse* = object
   body*: string
   status*: int
   headers*: HttpHeaders
 
-# proc logItMaybe(httpMethod: string, uri: Uri, body: string, response: Response) =
-#   let outLocation = getEnv("HTTP_LOGGING")
-#   if len(outLocation) > 0:
-#     let fd = open(outLocation, fmAppend)
-#     let node = %*{ 
-#       "method": httpMethod, 
-#       "uri": $uri, 
-#       "requestBody": body,
-#       "responseBody": response.body,
-#       "responseCode": response.status
-#     }
-#     writeln(fd, $node)
-#     close(fd)
+proc logItMaybe(httpMethod: string, uri: Uri, body: string, response: HttpResponse) =
+  let outLocation = getEnv("HTTP_LOGGING")
+  if len(outLocation) > 0:
+    let fd = open(outLocation, fmAppend)
+    let node = %*{ 
+      "method": httpMethod, 
+      "uri": $uri, 
+      "requestBody": body,
+      "responseBody": response.body,
+      "responseCode": response.status
+    }
+    writeln(fd, $node)
+    close(fd)
 
 discard global_init(GLOBAL_ALL)
 var handle {.threadvar.}: PCurl
@@ -97,4 +99,4 @@ proc rawRequest*(uri: Uri, httpMethod: string, body = "", headers: HttpHeaders =
   setPosition(stream, 0)
   let respBody = readAll(stream)
   result = HttpResponse(body: respBody, status: statusCode, headers: responseHeaders)
-  # logItMaybe(httpMethod, uri, bodyStr, resp)    
+  logItMaybe(httpMethod, uri, body, result)    
