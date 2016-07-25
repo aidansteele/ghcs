@@ -54,7 +54,7 @@ proc curlHeaderCb(data: cstring, size: int, nmemb: int, context: HttpHeaders): i
     add(context, name, value)
   result = actualSize
 
-proc rawRequest*(uri: Uri, httpMethod: string, body = "", headers: HttpHeaders = nil): HttpResponse =
+proc rawRequest*(uri: Uri, httpMethod: string, body = "", headers: HttpHeaders = nil, verifySsl: bool = true): HttpResponse =
   var slist: Pslist
 
   if headers == nil or hasKey(headers, "User-Agent") == false:
@@ -82,6 +82,9 @@ proc rawRequest*(uri: Uri, httpMethod: string, body = "", headers: HttpHeaders =
   discard easy_setopt(handle, OPT_HEADERDATA, responseHeaders)
   discard easy_setopt(handle, OPT_ENCODING, "") # empty string tells curl to use defaults
   
+  let verifyInt = if verifySsl: 1 else: 0
+  discard easy_setopt(handle, OPT_SSL_VERIFYPEER, verifyInt)
+
   if len(body) > 0:
     discard easy_setopt(handle, OPT_POSTFIELDS, body)
     discard easy_setopt(handle, OPT_POSTFIELDSIZE, len(body))

@@ -110,6 +110,9 @@ proc doIt() =
   let cmd = params[0]
   let cmdParams = optionsTable(params[1..high(params)])
   let opts = initGhcsInputOptions(cmdParams)
+
+  if hasKey(cmdParams, "no-verify"):
+    githubVerifySsl = false
   
   case cmd
   of "get":
